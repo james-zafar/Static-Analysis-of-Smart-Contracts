@@ -7,7 +7,7 @@ public class ExchangeOperations {
     }
 
     private void populateCodeList() {
-        allCodes.add(new Opcode("50", " ", 0, " ", 0));
+        allCodes.add(new Opcode("50", " ", " ", 0));
     }
 
 }

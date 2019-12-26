@@ -1,11 +1,10 @@
 public class Opcode {
-    private int gasCost, args;
+    private int gasCost;
     private String code, name, description;
 
-    public Opcode(String ref, String name, int args, String desc, int gasCost) {
+    public Opcode(String ref, String name, String desc, int gasCost) {
         this.code = ref;
         this.name = name;
-        this.args = args;
         this.description = desc;
         this.gasCost = gasCost;
     }
@@ -19,7 +18,7 @@ public class Opcode {
     }
 
     public String toString(Opcode code) {
-        return ((this.code) + " " +  this.name + " " + String.valueOf(this.args) + " " +
+        return ((this.code) + " " +  this.name + " " +
                 this.description + " " + String.valueOf(this.gasCost));
     }
 }
