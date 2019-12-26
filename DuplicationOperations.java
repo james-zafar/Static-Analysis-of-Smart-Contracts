@@ -14,7 +14,7 @@ public class DuplicationOperations {
         StringBuilder builder;
         String start = "Duplicate ";
         String end = "th stack item";
-        for(int i = 2; i <= 15; i++) {
+        for(int i = 3; i <= 15; i++) {
             builder = new StringBuilder();
             builder.append(start);
             builder.append(Integer.toString((i + 1)));
