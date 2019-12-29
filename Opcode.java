@@ -9,12 +9,20 @@ public class Opcode {
         this.gasCost = gasCost;
     }
 
-    public String getCode(String name) {
-        return code;
+    public String getCode() {
+        return this.code;
     }
 
-    public String getName(int code) {
-        return name;
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public int getGasCost() {
+        return this.gasCost;
     }
 
     public String toString(Opcode code) {
