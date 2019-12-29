@@ -5,6 +5,80 @@ public class EnvironmentalInfo {
         populateCodeList();
     }
 
+    //get addrress of currently executing account
+    public String getAddress() {
+        return "";
+    }
+
+    //get balance of a given account with address arg
+    public String getBalance(String arg) {
+        return "";
+    }
+
+    //Returns transaction sender
+    public String getOrigin() {
+        return "";
+    }
+
+    //Returns call sender
+    public String getCaller() {
+        return "";
+    }
+
+    public void callValue() {
+        //Placeholder
+    }
+
+    //call data starting from given position
+    public void callDataLoad(String position) {
+
+    }
+
+    //returns size of call data in bytes
+    public byte callDataSize() {
+        return 0;
+    }
+
+    //Copy bytes from calldata at given position to given memory position
+    public void callDataCopy(byte toPosition, byte fromPosition, byte byteData) {
+
+    }
+
+    //size of the code of the current contract / execution context
+    public void codeSize() {
+
+    }
+
+    //Copy bytes from code at given position to given memory position
+    public void codeCopy(byte toPosition, byte fromPosition, byte byteData) {
+
+    }
+
+    //returns gas price of transaction
+    public void gasPrice() {
+
+    }
+
+    //Returns size of code at position at address a
+    public void extCodeSize(String address) {
+
+    }
+
+    //Same as code copy but takes code at address a
+    public void extCodeCopy(String address, byte toPosition, byte fromPosition, byte byteData) {
+
+    }
+
+
+    public String returnDataSize() {
+        return "";
+    }
+
+    //copy s bytes from returndata at position f to mem at position t
+    public void returnDataCopy(byte s, byte f, byte t) {
+
+    }
+
     private void populateCodeList() {
         allCodes.add(new Opcode("30", "ADDRESS", "Get address of currently executing account", 0));
         allCodes.add(new Opcode("31", "BALANCE", "Get balance of the given account", 0));
