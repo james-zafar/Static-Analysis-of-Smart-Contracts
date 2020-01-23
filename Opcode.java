@@ -1,12 +1,14 @@
 public class Opcode {
     private int gasCost;
     private String code, name, description;
+    boolean extraData;
 
-    public Opcode(String ref, String name, String desc, int gasCost) {
+    public Opcode(String ref, String name, String desc, int gasCost, boolean extraData) {
         this.code = ref;
         this.name = name;
         this.description = desc;
         this.gasCost = gasCost;
+        this.extraData = extraData;
     }
 
     public String getCode() {
@@ -23,6 +25,10 @@ public class Opcode {
 
     public int getGasCost() {
         return this.gasCost;
+    }
+
+    public boolean extraDataRequired() {
+        return this.extraData;
     }
 
     public String toString(Opcode code) {
