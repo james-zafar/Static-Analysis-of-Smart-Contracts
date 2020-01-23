@@ -11,6 +11,8 @@ public class Opcode {
         this.extraData = extraData;
     }
 
+    public Opcode() { };
+
     public String getCode() {
         return this.code;
     }
@@ -29,6 +31,10 @@ public class Opcode {
 
     public boolean extraDataRequired() {
         return this.extraData;
+    }
+
+    public Opcode getOpcode(String code) {
+        return new Opcode(code, this.name, this.description, this.gasCost, this.extraData);
     }
 
     public String toString(Opcode code) {

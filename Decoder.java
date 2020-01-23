@@ -7,6 +7,7 @@ public class Decoder {
     private static List<String> theOpcodes = new ArrayList<String>();
     public static HashMap<List<String>, String> decoded = new HashMap<List<String>, String>();
     public static final List<Opcode> allOpcodes = list.getList();
+    private static Opcode myCode = new Opcode();
 
     public static void main(String [] args) {
         //Remove leading 0x in any input bytecode
@@ -14,7 +15,7 @@ public class Decoder {
             bytecode = bytecode.substring(2, bytecode.length());
         }
         splitCode();
-        System.out.println(Arrays.toString(theOpcodes.toArray()));
+        //System.out.println(Arrays.toString(theOpcodes.toArray()));
         decodeBytecode();
         System.out.println(Arrays.asList(decoded));
     }
@@ -37,9 +38,12 @@ public class Decoder {
             if(opcodeName != null) {
                 tempList.add(theOpcodes.get(i));
                 tempList.add(opcodeName);
-                decoded.put(tempList, "To contain required info");
-            }else {
-                System.out.print(theOpcodes.get(i) + " - ");
+                if(myCode.extraDataRequired()) {
+                    String additionalData = getAdditionalInfo(theOpcodes.get(i));
+                    decoded.put(tempList, additionalData);
+                }else {
+                    decoded.put(tempList, null);
+                }
             }
         }
         System.out.println();
@@ -49,10 +53,15 @@ public class Decoder {
         int counter = 0;
         while(counter < allOpcodes.size()) {
             if(allOpcodes.get(counter).getCode().matches(opcode)) {
+                myCode = allOpcodes.get(counter);
                 return allOpcodes.get(counter).getName();
             }
             counter++;
         }
         return null;
+    }
+
+    private static String getAdditionalInfo(String opcode) {
+        return "tbc";
     }
 }
