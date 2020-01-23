@@ -1,8 +1,8 @@
 import java.util.*;
-public class BlockInfo {
+public class BlockOperations {
     List<Opcode> allCodes = new ArrayList<Opcode>();
 
-    public BlockInfo() {
+    public BlockOperations() {
         populateCodeList();
     }
 

@@ -6,6 +6,65 @@ public class StackMemory {
         populateCodeList();
     }
 
+    //Remove item from the stack
+    public void pop() {
+    }
+
+    //Load word from memory
+    public void mLoad() {
+
+    }
+
+    //Save word to memory
+    public void mStore() {
+
+    }
+
+    //Save byte to memory
+    public void byteStore() {
+
+    }
+
+    //load word from storage
+    public void wordLoad() {
+
+    }
+
+    //Save word to storage
+    public void wordStore() {
+
+    }
+
+    //Jump to location
+    public void jump() {
+
+    }
+
+    //Conditional Jump
+    public void jumpI() {
+
+    }
+
+    //Current counter value prior to instruction call
+    public void getCounter() {
+
+    }
+
+    //Get size of active memory in bytes
+    public void mSize() {
+
+    }
+
+    //Get amount of available gas
+    public void getGas() {
+
+    }
+
+    //Mark valid jump point
+    public void jumpDest() {
+
+    }
+
     private void populateCodeList() {
         allCodes.add(new Opcode("50", "POP", "Remove item from the stack", 0));
         allCodes.add(new Opcode("51", "MLOAD", "Load word from memory", 0));
