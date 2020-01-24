@@ -10,6 +10,6 @@ public class SHA3 {
     }
 
     private void populateCodeList() {
-        allCodes.add(new Opcode("20", "SHA3", "Compute Keccak-256 hash.", 0, false));
+        allCodes.add(new Opcode("20", "SHA3", "Compute Keccak-256 hash.", 30, false));
     }
 }

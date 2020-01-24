@@ -12,7 +12,7 @@ public class SystemOperations {
 
 
     private void populateCodeList() {
-        allCodes.add(new Opcode("f0", "CREATE", "Create a new account with associated code", 0, true));
+        allCodes.add(new Opcode("f0", "CREATE", "Create a new account with associated code", 32000, true));
         allCodes.add(new Opcode("f1", "CALL", "Message-call into an account", 0, true));
         allCodes.add(new Opcode("f2", "CALLCODE", "Message-call into this account with an alternative account's code. Exactly equivalent to CALL ", 0, true));
         allCodes.add(new Opcode("f3", "RETURN", "Halt execution returning output data \n"

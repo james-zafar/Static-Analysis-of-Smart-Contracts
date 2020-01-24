@@ -7,9 +7,9 @@ public class DuplicationOperations {
     }
 
     private void populateCodeList() {
-        allCodes.add(new Opcode("80", "DUP1", "Duplicate 1st stack item", 0, true));
-        allCodes.add(new Opcode("81", "DUP2", "Duplicate 2nd stack item", 0, true));
-        allCodes.add(new Opcode("82", "DUP3", "Duplicate 3rd stack item", 0, true));
+        allCodes.add(new Opcode("80", "DUP1", "Duplicate 1st stack item", 3, true));
+        allCodes.add(new Opcode("81", "DUP2", "Duplicate 2nd stack item", 3, true));
+        allCodes.add(new Opcode("82", "DUP3", "Duplicate 3rd stack item", 3, true));
 
         StringBuilder builder;
         String start = "Duplicate ";
@@ -27,10 +27,10 @@ public class DuplicationOperations {
         String name = "DUP" + String.valueOf((number + 1));
         if(number < 10) {
             String code = "8" + String.valueOf(number);
-            allCodes.add(new Opcode(code, name, desc, 0, true));
+            allCodes.add(new Opcode(code, name, desc, 3, true));
         }else {
             String code = "8" + Integer.toHexString(number);
-            allCodes.add(new Opcode(code, name, desc, 0, true));
+            allCodes.add(new Opcode(code, name, desc, 3, true));
         }
     }
 

@@ -19,7 +19,7 @@ public class Decoder {
         splitCode();
         //System.out.println(Arrays.toString(theOpcodes.toArray()));
         decodeBytecode();
-        //System.out.println(Arrays.asList(decoded));
+        System.out.println(Arrays.asList(decoded));
     }
 
     private static void splitCode() {
@@ -70,37 +70,54 @@ public class Decoder {
         StringBuilder sb = new StringBuilder("");
         int counter = 0;
         int noBytes = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
-        if(theCode.startsWith("6")) {
+        if(theCode.startsWith("0")) {
+            sb.append(arithmeticOp(theCode));
+        }else if(theCode.startsWith("1")) {
+
+        }else if(theCode.startsWith("3")) {
+
+        }else if(theCode.startsWith("4")) {
+
+        }else if(theCode.startsWith("5")) {
+            if(theCode.matches("50")) {
+                stack.pop();
+            }else {
+                stackOperations(theCode);
+            }
+        } else if(theCode.startsWith("6")) {
             while(counter <= noBytes) {
                 sb.append(theOpcodes.get(counter));
                 stack.push(theOpcodes.get(counter));
                 counter++;
             }
         }else if(theCode.startsWith("8")) {
-            duplicateStackItem(theCode);
+            sb.append(duplicateStackItem(theCode));
         }else if(theCode.startsWith("9")) {
-            swapStackItems(theCode);
-        }else if(theCode.startsWith("0")) {
-            arithmeticOp(theCode);
+            sb.append(swapStackItems(theCode));
         }
         String additionalInfo = sb.toString();
         return additionalInfo;
     }
 
-    private static void duplicateStackItem(String theCode) {
+
+    private static String duplicateStackItem(String theCode) {
         int stackNumber = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         stack.push(stack.get(stackNumber + 1));
+        return(stack.get(stackNumber + 1));
     }
 
-    private static void swapStackItems(String theCode) {
+    private static String swapStackItems(String theCode) {
         int swapWith = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         stack.swapElements(swapWith + 1);
+        String res = stack.get(swapWith + 1) + ", " + stack.get(0);
+        return res;
     }
 
-    private static void arithmeticOp(String theCode) {
+    private static String arithmeticOp(String theCode) {
         String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
         String arg1 = stack.get(0);
         String arg2 = stack.get(1);
+        String additionalInfo = arg1 + ", " + arg2;
         try {
             Class<?> myClass = Class.forName("StopAndArithmetic");
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall, String.class, String.class);
@@ -118,6 +135,24 @@ public class Decoder {
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return additionalInfo;
+    }
 
+    private static void stackOperations(String theCode) {
+        StackMemory temp = new StackMemory();
+        String methodToCall = temp.getOpcodeName(theCode).toLowerCase();
+        try {
+            Class<?> myClass = Class.forName("StackMemory");
+            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall);
+            method.invoke(temp);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch(IllegalAccessException e) {
+            e.printStackTrace();
+        } catch(java.lang.reflect.InvocationTargetException e) {
+            e.printStackTrace();
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

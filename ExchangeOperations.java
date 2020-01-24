@@ -7,8 +7,8 @@ public class ExchangeOperations {
     }
 
     private void populateCodeList() {
-        allCodes.add(new Opcode("90", "SWAP1", "Exchange 1st and 2nd stack items", 0, true));
-        allCodes.add(new Opcode("91", "SWAP2", "Exchange 1st and 3rd stack items", 0, true));
+        allCodes.add(new Opcode("90", "SWAP1", "Exchange 1st and 2nd stack items", 3, true));
+        allCodes.add(new Opcode("91", "SWAP2", "Exchange 1st and 3rd stack items", 3, true));
 
         StringBuilder builder;
         String start = "Exechance 1st and ";
@@ -26,10 +26,10 @@ public class ExchangeOperations {
         String name = "SWAP" + String.valueOf((number + 1));
         if(number < 10) {
             String code = "9" + String.valueOf(number);
-            allCodes.add(new Opcode(code, name, desc, 0, true));
+            allCodes.add(new Opcode(code, name, desc, 3, true));
         }else {
             String code = "9" + Integer.toHexString(number);
-            allCodes.add(new Opcode(code, name, desc, 0, true));
+            allCodes.add(new Opcode(code, name, desc, 3, true));
         }
     }
 

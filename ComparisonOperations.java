@@ -49,16 +49,16 @@ public class ComparisonOperations {
 
 
     private void populateOpcodeList() {
-        allCodes.add(new Opcode("10", "LT", "Less-than comparison", 0, true));
-        allCodes.add(new Opcode("11", "GT", "Greater-than comparison", 0, true));
-        allCodes.add(new Opcode("12", "SLT", "Signed less-than comparison", 0, true));
-        allCodes.add(new Opcode("13", "SGT", "Signed greater-than comparison", 0, true));
-        allCodes.add(new Opcode("14", "EQ", "Equality comparison", 0, true));
-        allCodes.add(new Opcode("15", "ISZERO", "Simple not operator", 0, true));
-        allCodes.add(new Opcode("16", "AND", "Bitwise AND operation", 0, true));
-        allCodes.add(new Opcode("17", "OR", "Bitwise OR operation", 0, true));
-        allCodes.add(new Opcode("18", "XOR", "Bitwise XOR operation", 0, true));
-        allCodes.add(new Opcode("19", "NOT", "Bitwise NOT operation", 0, true));
-        allCodes.add(new Opcode("1a", "BYTE", "Retrieve single byte from word", 0, true));
+        allCodes.add(new Opcode("10", "LT", "Less-than comparison", 3, true));
+        allCodes.add(new Opcode("11", "GT", "Greater-than comparison", 3, true));
+        allCodes.add(new Opcode("12", "SLT", "Signed less-than comparison", 3, true));
+        allCodes.add(new Opcode("13", "SGT", "Signed greater-than comparison", 3, true));
+        allCodes.add(new Opcode("14", "EQ", "Equality comparison", 3, true));
+        allCodes.add(new Opcode("15", "ISZERO", "Simple not operator", 3, true));
+        allCodes.add(new Opcode("16", "AND", "Bitwise AND operation", 3, true));
+        allCodes.add(new Opcode("17", "OR", "Bitwise OR operation", 3, true));
+        allCodes.add(new Opcode("18", "XOR", "Bitwise XOR operation", 3, true));
+        allCodes.add(new Opcode("19", "NOT", "Bitwise NOT operation", 3, true));
+        allCodes.add(new Opcode("1a", "BYTE", "Retrieve single byte from word", 3, true));
     }
 }
