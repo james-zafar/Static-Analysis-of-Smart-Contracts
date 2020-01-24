@@ -13,8 +13,19 @@ public class Stack {
         this.theStack.remove(0);
     }
 
-    public String inspectElement(int arg) {
+    public String get(int arg) {
+        if(arg > theStack.size()) {
+            throw new IllegalArgumentException();
+        }
         return this.theStack.get(arg);
+    }
+
+    public List<String> getStack() {
+        return this.theStack;
+    }
+
+    public void swapElements(int toSwap) {
+        Collections.swap(this.theStack, 0, toSwap);
     }
 
     public boolean nextZero() {
