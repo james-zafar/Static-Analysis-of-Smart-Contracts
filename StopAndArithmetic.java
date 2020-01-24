@@ -6,39 +6,44 @@ public class StopAndArithmetic{
         populateOpcodeList();
     }
 
-    public byte add(byte valueOne, byte valueTwo) {
-        return((byte) (valueOne + valueTwo));
+    public String add(String arg1, String arg2) {
+        int ans = Integer.parseInt(arg1, 16) + Integer.parseInt(arg2, 16);
+        return Integer.toHexString(ans);
     }
 
-    public byte multiply(byte valueOne, byte valueTwo) {
-        return ((byte) (valueOne * valueTwo));
+    public String sub(String arg1, String arg2) {
+        int ans = Integer.parseInt(arg1, 16) - Integer.parseInt(arg2, 16);
+        return Integer.toHexString(ans);
     }
 
-    public byte subtract(byte valueOne, byte valueTwo) {
-        return ((byte) (valueOne - valueTwo));
+    public String mul(String arg1, String arg2) {
+        int ans = Integer.parseInt(arg1, 16) * Integer.parseInt(arg2, 16);
+        return Integer.toHexString(ans);
     }
 
-    public byte divide(byte valueOne, byte valueTwo) {
-        return ((byte) (valueOne / valueTwo));
+    public String div(String arg1, String arg2) {
+        int ans = (int) (Integer.parseInt(arg1, 16) / Integer.parseInt(arg2, 16));
+        return Integer.toHexString(ans);
     }
 
-    public byte modulo(byte valueOne, byte valueTwo) {
-        return((byte) (valueOne % valueTwo));
+    public String mod(String arg1, String arg2) {
+        int ans = Integer.parseInt(arg1, 16) % Integer.parseInt(arg2, 16);
+        return Integer.toHexString(ans);
     }
 
-    public byte addModulo(byte valueOne, byte valueTwo, byte valueThree) {
+    public String exp(String arg1, String arg2) {
+        int ans = (int) Math.pow(Integer.parseInt(arg1, 16), Integer.parseInt(arg2, 16));
+        return Integer.toHexString(ans);
+    }
+
+    public byte addmod(byte valueOne, byte valueTwo, byte valueThree) {
         return((byte) ((valueOne + valueTwo) % valueThree));
     }
 
-    public byte multiplyModulo(byte valueOne, byte valueTwo, byte valueThree) {
+    public byte mulmod(byte valueOne, byte valueTwo, byte valueThree) {
         return((byte) ((valueOne * valueTwo)% valueThree));
     }
-
-    public byte exponent(byte valueOne, byte valueTwo) {
-        return((byte) (Math.pow(valueOne, valueTwo)));
-    }
-
-    public void signExtend(byte start, byte x) {
+    public void signextend(byte start, byte x) {
         //Need to understand what this does
     }
 
@@ -46,6 +51,19 @@ public class StopAndArithmetic{
         return allCodes;
     }
 
+    public String getOpcodeName(String code) {
+        for(Opcode i : allCodes) {
+            if(i.getCode().matches(code)) {
+                if(i.getName().matches("SMOD")) {
+                    return "MOD";
+                }else if(i.getName().matches("SDIV")) {
+                    return "DIV";
+                }
+                return i.getName();
+            }
+        }
+        return null;
+    }
 
     private void populateOpcodeList() {
         allCodes.add(new Opcode("00", "STOP", "Halts Execution", 0, false));

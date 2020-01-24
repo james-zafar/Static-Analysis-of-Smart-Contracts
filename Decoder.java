@@ -3,12 +3,13 @@ public class Decoder {
 
     public static fullOpcodeList list = new fullOpcodeList();
 
-    public static String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab";
+    private static String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
     private static List<String> theOpcodes = new ArrayList<String>();
-    public static HashMap<List<String>, String> decoded = new HashMap<List<String>, String>();
+    private static HashMap<List<String>, String> decoded = new HashMap<List<String>, String>();
     public static final List<Opcode> allOpcodes = list.getList();
     private static Opcode myCode = new Opcode();
     public static Stack stack = new Stack();
+    private static StopAndArithmetic completeArithmeticOps = new StopAndArithmetic();
 
     public static void main(String [] args) {
         //Remove leading 0x in any input bytecode
@@ -18,7 +19,7 @@ public class Decoder {
         splitCode();
         //System.out.println(Arrays.toString(theOpcodes.toArray()));
         decodeBytecode();
-        System.out.println(Arrays.asList(decoded));
+        //System.out.println(Arrays.asList(decoded));
     }
 
     private static void splitCode() {
@@ -44,13 +45,13 @@ public class Decoder {
                     decoded.put(tempList, additionalData);
                 }else {
                     decoded.put(tempList, null);
+                    //throw new IllegalArgumentException("Unknown Opcode");
                 }
             }
             theOpcodes.remove(0);
             //Print out the stack
             //System.out.println(Arrays.toString(stack.getStack().toArray()));;
         }
-        System.out.println();
     }
 
     private static String findOpcodeName(String opcode) {
@@ -79,6 +80,8 @@ public class Decoder {
             duplicateStackItem(theCode);
         }else if(theCode.startsWith("9")) {
             swapStackItems(theCode);
+        }else if(theCode.startsWith("0")) {
+            arithmeticOp(theCode);
         }
         String additionalInfo = sb.toString();
         return additionalInfo;
@@ -92,6 +95,29 @@ public class Decoder {
     private static void swapStackItems(String theCode) {
         int swapWith = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         stack.swapElements(swapWith + 1);
+    }
+
+    private static void arithmeticOp(String theCode) {
+        String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
+        String arg1 = stack.get(0);
+        String arg2 = stack.get(1);
+        try {
+            Class<?> myClass = Class.forName("StopAndArithmetic");
+            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall, String.class, String.class);
+            Object result = method.invoke(completeArithmeticOps, arg1, arg2);
+            String res = (String) result;
+            stack.pop();
+            stack.pop();
+            stack.push(res);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch(IllegalAccessException e) {
+            e.printStackTrace();
+        } catch(java.lang.reflect.InvocationTargetException e) {
+            e.printStackTrace();
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 }

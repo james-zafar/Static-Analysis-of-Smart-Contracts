@@ -37,7 +37,7 @@ public class Opcode {
         return new Opcode(code, this.name, this.description, this.gasCost, this.extraData);
     }
 
-    public String toString(Opcode code) {
+    public String toString() {
         return ((this.code) + " " +  this.name + " " +
                 this.description + " " + String.valueOf(this.gasCost));
     }
