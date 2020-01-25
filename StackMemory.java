@@ -52,11 +52,6 @@ public class StackMemory {
 
     }
 
-    //Get amount of available gas
-    public void gas() {
-
-    }
-
     //Mark valid jump point
     public void jumpdest() {
 

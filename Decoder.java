@@ -73,7 +73,7 @@ public class Decoder {
         if(theCode.startsWith("0")) {
             sb.append(arithmeticOp(theCode));
         }else if(theCode.startsWith("1")) {
-
+            sb.append(doComparison(theCode));
         }else if(theCode.startsWith("3")) {
 
         }else if(theCode.startsWith("4")) {
@@ -99,6 +99,33 @@ public class Decoder {
         return additionalInfo;
     }
 
+
+    private static String doComparison(String theCode) {
+        ComparisonOperations classRef = new ComparisonOperations();
+        String arg1 = stack.get(0);
+        String arg2 = stack.get(1);
+        String additionalInfo = arg1 + ", " + arg2;
+        String res = "";
+        stack.pop();
+        stack.pop();
+        String methodName = classRef.getOpcodeName(theCode).toLowerCase();
+        try {
+            Class<?> myClass = Class.forName("ComparisonOperations");
+            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName);
+            Object result = method.invoke(classRef);
+            res = (String) result;
+            stack.push(res);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch(IllegalAccessException e) {
+            e.printStackTrace();
+        } catch(java.lang.reflect.InvocationTargetException e) {
+            e.printStackTrace();
+        } catch(ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return additionalInfo;
+    }
 
     private static String duplicateStackItem(String theCode) {
         int stackNumber = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
@@ -155,4 +182,5 @@ public class Decoder {
             e.printStackTrace();
         }
     }
+
 }
