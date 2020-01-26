@@ -14,10 +14,15 @@ public class Stack {
     }
 
     public String get(int arg) {
-        if(arg > theStack.size()) {
-            throw new IllegalArgumentException();
+        try {
+            if (arg > theStack.size()) {
+                throw new IllegalArgumentException("The stack element requested does not exist");
+            } else {
+                return this.theStack.get(arg);
+            }
+        }catch(IllegalArgumentException e) {
+            throw new RuntimeException("Could not retrieve element at index " + arg , e);
         }
-        return this.theStack.get(arg);
     }
 
     public List<String> getStack() {

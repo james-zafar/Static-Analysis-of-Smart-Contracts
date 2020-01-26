@@ -1,18 +1,18 @@
 import java.util.*;
 public class Decoder {
 
-    private static FullOpcodeList list = new FullOpcodeList();
+    private FullOpcodeList list = new FullOpcodeList();
 
-    private static String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
-    private static List<String> theOpcodes = new ArrayList<String>();
+    private String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
+    private List<String> theOpcodes = new ArrayList<String>();
     //HashMap contains [Code, Name], data added to stack (optional)
-    private static HashMap<List<String>, String> decoded = new HashMap<List<String>, String>();
-    public static final List<Opcode> allOpcodes = list.getList();
-    private static Opcode myCode = new Opcode();
-    public static Stack stack = new Stack();
-    private static StopAndArithmetic completeArithmeticOps = new StopAndArithmetic();
+    private HashMap<List<String>, List<String>> decoded = new HashMap<List<String>, List<String>>();
+    public final List<Opcode> allOpcodes = list.getList();
+    private Opcode myCode = new Opcode();
+    public Stack stack = new Stack();
+    private StopAndArithmetic completeArithmeticOps = new StopAndArithmetic();
 
-    public static void main(String [] args) {
+    public Decoder() {
         //Remove leading 0x in any input bytecode
         if(bytecode.startsWith("0x")) {
             bytecode = bytecode.substring(2, bytecode.length());
@@ -20,10 +20,14 @@ public class Decoder {
         splitCode();
         //System.out.println(Arrays.toString(theOpcodes.toArray()));
         decodeBytecode();
-        System.out.println(Arrays.asList(decoded));
+        //System.out.println(Arrays.asList(decoded));
+        FormatBytecode formatter = new FormatBytecode(decoded);
+        List<String> finished = new ArrayList<String>();
+        finished = formatter.getFormattedData();
+        finished.forEach(current -> System.out.print(current + "\n"));
     }
 
-    private static void splitCode() {
+    private void splitCode() {
         int j = 0;
         int last = (int) (bytecode.length() / 2) - 1;
         for (int i = 0; i < last; i++) {
@@ -34,14 +38,15 @@ public class Decoder {
 
     }
 
-    private static void decodeBytecode() {
+    private void decodeBytecode() {
+        List<String> additionalData = new ArrayList<String>();
         while(theOpcodes.size() > 0) {
             List<String> tempList = new ArrayList<String>();
             String opcodeName = findOpcodeName(theOpcodes.get(0));
             if(opcodeName != null) {
                 tempList.add(theOpcodes.get(0));
                 tempList.add(opcodeName);
-                String additionalData = getAdditionalInfo(theOpcodes.get(0));
+                additionalData = getAdditionalInfo(theOpcodes.get(0));
                 decoded.put(tempList, additionalData);
             }
             theOpcodes.remove(0);
@@ -50,7 +55,7 @@ public class Decoder {
         }
     }
 
-    private static String findOpcodeName(String opcode) {
+    private String findOpcodeName(String opcode) {
         try {
             int counter = 0;
             while (counter < allOpcodes.size()) {
@@ -67,33 +72,40 @@ public class Decoder {
         }
     }
 
-    private static String getAdditionalInfo(String theCode) {
-        StringBuilder sb = new StringBuilder("");
+    private List<String> getAdditionalInfo(String theCode) throws RuntimeException {
+        List<String> stackAmendments = new ArrayList<String>();
         int counter = 0;
         int noBytes = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         char swtichChar = theCode.charAt(0);
         switch(swtichChar) {
             case '0':
-                //Arithmetic Operattions
-                sb.append(arithmeticOp(theCode));
+                stackAmendments = arithmeticOp(theCode);
                 break;
             case '1':
                 //Comparsion Operations
-                sb.append(doComparison(theCode));
+                stackAmendments = doComparison(theCode);
                 break;
             case '2':
+                stackAmendments.add("None");
+                stackAmendments.add("None");
                 //SHA3
                 break;
             case '3':
+                stackAmendments.add("None");
+                stackAmendments.add("None");
                 //Environmental Operations
                 break;
             case '4':
+                stackAmendments.add("None");
+                stackAmendments.add("None");
                 //Block Operations
                 break;
             case '5':
                 //Memory, Storage and Flow Operations
                 if(theCode.matches("50")) {
                     stack.pop();
+                    stackAmendments.add("None");
+                    stackAmendments.add(stack.get(0));
                 }else {
                     stackOperations(theCode);
                 }
@@ -101,39 +113,46 @@ public class Decoder {
             case '6':
             case '7':
                 //Push Operations
+                StringBuilder sb = new StringBuilder("");
                 while(counter <= noBytes) {
-                    sb.append(theOpcodes.get(counter));
+                    sb.append(theOpcodes.get(counter) + " ");
                     stack.push(theOpcodes.get(counter));
                     counter++;
                 }
+                stackAmendments.add(sb.toString());
+                stackAmendments.add("None");
                 break;
             case '8':
                 //Duplication Operations
-                sb.append(duplicateStackItem(theCode));
+                stackAmendments = duplicateStackItem(theCode);
                 break;
             case '9':
                 //Exchange(Swap) Operations
-                sb.append(swapStackItems(theCode));
+                stackAmendments = swapStackItems(theCode);
                 break;
             case 'a':
+                stackAmendments.add("None");
+                stackAmendments.add("None");
                 //Logging Operations
                 break;
             case 'f':
+                stackAmendments.add("None");
+                stackAmendments.add("None");
                 //System Operations
                 break;
             default:
                 throw new RuntimeException("Unreachable");
         }
-        String additionalInfo = sb.toString();
-        return additionalInfo;
+        return stackAmendments;
     }
 
 
-    private static String doComparison(String theCode) {
+    private List<String> doComparison(String theCode) {
+        List<String> additionalInfo = new ArrayList<String>();
         ComparisonOperations classRef = new ComparisonOperations();
         String arg1 = stack.get(0);
         String arg2 = stack.get(1);
-        String additionalInfo = arg1 + ", " + arg2;
+        String removed = arg1 + ", " + arg2;
         String res = "";
         stack.pop();
         stack.pop();
@@ -153,27 +172,35 @@ public class Decoder {
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
         }
+        additionalInfo.add(res);
+        additionalInfo.add(removed);
         return additionalInfo;
     }
 
-    private static String duplicateStackItem(String theCode) {
+    private List<String> duplicateStackItem(String theCode) {
+        List<String> info = new ArrayList<String>();
         int stackNumber = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         stack.push(stack.get(stackNumber + 1));
-        return(stack.get(stackNumber + 1));
+        info.add(stack.get(stackNumber + 1));
+        info.add("None");
+        return info;
     }
 
-    private static String swapStackItems(String theCode) {
+    private List<String> swapStackItems(String theCode) {
+        List<String> changes = new ArrayList<String>();
+        changes.add("None");
+        changes.add("None");
         int swapWith = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
         stack.swapElements(swapWith + 1);
-        String res = stack.get(swapWith + 1) + ", " + stack.get(0);
-        return res;
+        return changes;
     }
 
-    private static String arithmeticOp(String theCode) {
+    private List<String> arithmeticOp(String theCode) {
+        List<String> additionalInfo = new ArrayList<String>();
         String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
         String arg1 = stack.get(0);
         String arg2 = stack.get(1);
-        String additionalInfo = arg1 + ", " + arg2;
+        String removed = arg1 + ", " + arg2;
         try {
             Class<?> myClass = Class.forName("StopAndArithmetic");
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall, String.class, String.class);
@@ -182,6 +209,8 @@ public class Decoder {
             stack.pop();
             stack.pop();
             stack.push(res);
+            additionalInfo.add(res);
+            additionalInfo.add(removed);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch(IllegalAccessException e) {
@@ -194,7 +223,7 @@ public class Decoder {
         return additionalInfo;
     }
 
-    private static void stackOperations(String theCode) {
+    private void stackOperations(String theCode) {
         StackMemory temp = new StackMemory();
         String methodToCall = temp.getOpcodeName(theCode).toLowerCase();
         try {
