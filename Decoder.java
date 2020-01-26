@@ -5,6 +5,7 @@ public class Decoder {
 
     private static String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
     private static List<String> theOpcodes = new ArrayList<String>();
+    //HashMap contains [Code, Name], data added to stack (optional)
     private static HashMap<List<String>, String> decoded = new HashMap<List<String>, String>();
     public static final List<Opcode> allOpcodes = list.getList();
     private static Opcode myCode = new Opcode();
@@ -40,13 +41,8 @@ public class Decoder {
             if(opcodeName != null) {
                 tempList.add(theOpcodes.get(0));
                 tempList.add(opcodeName);
-                if(myCode.extraDataRequired()) {
-                    String additionalData = getAdditionalInfo(theOpcodes.get(0));
-                    decoded.put(tempList, additionalData);
-                }else {
-                    decoded.put(tempList, null);
-                    //throw new IllegalArgumentException("Unknown Opcode");
-                }
+                String additionalData = getAdditionalInfo(theOpcodes.get(0));
+                decoded.put(tempList, additionalData);
             }
             theOpcodes.remove(0);
             //Print out the stack
@@ -55,15 +51,20 @@ public class Decoder {
     }
 
     private static String findOpcodeName(String opcode) {
-        int counter = 0;
-        while(counter < allOpcodes.size()) {
-            if(allOpcodes.get(counter).getCode().matches(opcode)) {
-                myCode = allOpcodes.get(counter);
-                return allOpcodes.get(counter).getName();
+        try {
+            int counter = 0;
+            while (counter < allOpcodes.size()) {
+                if (allOpcodes.get(counter).getCode().matches(opcode)) {
+                    myCode = allOpcodes.get(counter);
+                    return allOpcodes.get(counter).getName();
+                }
+                counter++;
             }
-            counter++;
+            throw new UnknownOpcodeException("Invalid opcode: " + opcode);
+        }catch(UnknownOpcodeException e) {
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     private static String getAdditionalInfo(String theCode) {
@@ -98,6 +99,7 @@ public class Decoder {
                 }
                 break;
             case '6':
+            case '7':
                 //Push Operations
                 while(counter <= noBytes) {
                     sb.append(theOpcodes.get(counter));
@@ -120,7 +122,7 @@ public class Decoder {
                 //System Operations
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new RuntimeException("Unreachable");
         }
         String additionalInfo = sb.toString();
         return additionalInfo;
@@ -138,8 +140,8 @@ public class Decoder {
         String methodName = classRef.getOpcodeName(theCode).toLowerCase();
         try {
             Class<?> myClass = Class.forName("ComparisonOperations");
-            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName);
-            Object result = method.invoke(classRef);
+            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName, String.class, String.class);
+            Object result = method.invoke(classRef, arg1, arg2);
             res = (String) result;
             stack.push(res);
         } catch (NoSuchMethodException e) {
