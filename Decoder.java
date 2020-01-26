@@ -1,7 +1,7 @@
 import java.util.*;
 public class Decoder {
 
-    public static fullOpcodeList list = new fullOpcodeList();
+    private static FullOpcodeList list = new FullOpcodeList();
 
     private static String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
     private static List<String> theOpcodes = new ArrayList<String>();
@@ -70,30 +70,57 @@ public class Decoder {
         StringBuilder sb = new StringBuilder("");
         int counter = 0;
         int noBytes = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
-        if(theCode.startsWith("0")) {
-            sb.append(arithmeticOp(theCode));
-        }else if(theCode.startsWith("1")) {
-            sb.append(doComparison(theCode));
-        }else if(theCode.startsWith("3")) {
-
-        }else if(theCode.startsWith("4")) {
-
-        }else if(theCode.startsWith("5")) {
-            if(theCode.matches("50")) {
-                stack.pop();
-            }else {
-                stackOperations(theCode);
-            }
-        } else if(theCode.startsWith("6")) {
-            while(counter <= noBytes) {
-                sb.append(theOpcodes.get(counter));
-                stack.push(theOpcodes.get(counter));
-                counter++;
-            }
-        }else if(theCode.startsWith("8")) {
-            sb.append(duplicateStackItem(theCode));
-        }else if(theCode.startsWith("9")) {
-            sb.append(swapStackItems(theCode));
+        char swtichChar = theCode.charAt(0);
+        switch(swtichChar) {
+            case '0':
+                //Arithmetic Operattions
+                sb.append(arithmeticOp(theCode));
+                break;
+            case '1':
+                //Comparsion Operations
+                sb.append(doComparison(theCode));
+                break;
+            case '2':
+                //SHA3
+                break;
+            case '3':
+                //Environmental Operations
+                break;
+            case '4':
+                //Block Operations
+                break;
+            case '5':
+                //Memory, Storage and Flow Operations
+                if(theCode.matches("50")) {
+                    stack.pop();
+                }else {
+                    stackOperations(theCode);
+                }
+                break;
+            case '6':
+                //Push Operations
+                while(counter <= noBytes) {
+                    sb.append(theOpcodes.get(counter));
+                    stack.push(theOpcodes.get(counter));
+                    counter++;
+                }
+                break;
+            case '8':
+                //Duplication Operations
+                sb.append(duplicateStackItem(theCode));
+                break;
+            case '9':
+                //Exchange(Swap) Operations
+                sb.append(swapStackItems(theCode));
+                break;
+            case 'a':
+                //Logging Operations
+                break;
+            case 'f':
+                //System Operations
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
         String additionalInfo = sb.toString();
         return additionalInfo;

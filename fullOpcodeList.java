@@ -1,20 +1,20 @@
 import java.util.*;
-public class fullOpcodeList {
-    public ComparisonOperations ComparisonOps = new ComparisonOperations();
-    public BlockOperations blockOps = new BlockOperations();
-    public DuplicationOperations duplicationOps = new DuplicationOperations();
-    public EnvironmentalInfo enviroOps = new EnvironmentalInfo();
-    public ExchangeOperations exchangeOps = new ExchangeOperations();
-    public LoggingOperations loggingOps = new LoggingOperations();
-    public PushOperations pushOps = new PushOperations();
-    public SHA3 sha3 = new SHA3();
-    public StackMemory stackMemOps = new StackMemory();
-    public StopAndArithmetic stopOps = new StopAndArithmetic();
-    public SystemOperations systemOps = new SystemOperations();
+public class FullOpcodeList {
+    private ComparisonOperations ComparisonOps = new ComparisonOperations();
+    private BlockOperations blockOps = new BlockOperations();
+    private DuplicationOperations duplicationOps = new DuplicationOperations();
+    private EnvironmentalInfo enviroOps = new EnvironmentalInfo();
+    private ExchangeOperations exchangeOps = new ExchangeOperations();
+    private LoggingOperations loggingOps = new LoggingOperations();
+    private PushOperations pushOps = new PushOperations();
+    private SHA3 sha3 = new SHA3();
+    private StackMemory stackMemOps = new StackMemory();
+    private StopAndArithmetic stopOps = new StopAndArithmetic();
+    private SystemOperations systemOps = new SystemOperations();
 
-    public List<Opcode> allCodes = new ArrayList<Opcode>();
+    private List<Opcode> allCodes = new ArrayList<Opcode>();
 
-    public fullOpcodeList() {
+    public FullOpcodeList() {
         allCodes.addAll(ComparisonOps.getAllCodes());
         allCodes.addAll(blockOps.getAllCodes());
         allCodes.addAll(duplicationOps.getAllCodes());
