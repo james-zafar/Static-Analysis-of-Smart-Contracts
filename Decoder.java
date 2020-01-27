@@ -3,7 +3,7 @@ import java.util.*;
 public class Decoder {
 
     private FullOpcodeList list = new FullOpcodeList();
-    private String address = "0xE0e9794A17aa5166c164b80fA0b126c72E5412B0";
+    private String address = "0x20E0e9794A17aa5166c164b80fA0b126c72E5412B0";
     private String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
     //private String bytecode = "0x608060405234801561001057600080fd5b506040516020806103ee833981018060405281019080805190602001909291905050508060008190555080600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002081905550506103608061008e6000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061014c565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610195565b604051808215151515815260200191505060405180910390f35b60008054905090565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101d257600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561022057600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205403600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205401600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555060019050929150505600a165627a7a7230582025608b5c372888ca7316c16f1748775824bc03cb64852867e119a10a03402ef500290000000000000000000000000000000000000000000000000000000000000000";
     private List<String> theOpcodes;
@@ -15,10 +15,7 @@ public class Decoder {
 
     public Decoder() {
         decoded = new HashMap<List<String>, List<String>>();
-        FormatBytecode formatter = new FormatBytecode(decoded);
         List<String> finished = new ArrayList<String>();
-        finished = formatter.getFormattedData();
-        finished.forEach(current -> System.out.print(current + "\n"));
         theOpcodes = new ArrayList<String>();
         stack = new Stack();
         memory = new Stack();
@@ -33,6 +30,9 @@ public class Decoder {
         //System.out.println(Arrays.toString(theOpcodes.toArray()));
         decodeBytecode();
         //System.out.println(Arrays.asList(decoded));
+        FormatBytecode formatter = new FormatBytecode(decoded);
+        finished = formatter.getFormattedData();
+        finished.forEach(current -> System.out.print(current + "\n"));
     }
 
     private void splitCode() {
@@ -95,6 +95,11 @@ public class Decoder {
             case '2':
                 stackAmendments.add("None");
                 stackAmendments.add("None");
+                try {
+                    throw new NoImplementationException("No SHA3 Implementation exists");
+                } catch (NoImplementationException e) {
+                    e.printStackTrace();
+                }
                 //SHA3
                 break;
             case '3':
@@ -102,11 +107,6 @@ public class Decoder {
                 stackAmendments.add("None");
                 stackAmendments.add("None");
                 //Environmental Operations
-                break;
-            case '4':
-                stackAmendments.add("None");
-                stackAmendments.add("None");
-                //Block Operations
                 break;
             case '5':
                 //Memory, Storage and Flow Operations
@@ -138,15 +138,22 @@ public class Decoder {
                 //Exchange(Swap) Operations
                 stackAmendments = swapStackItems(theCode);
                 break;
+            case '4':
             case 'a':
-                stackAmendments.add("None");
-                stackAmendments.add("None");
-                //Logging Operations
-                break;
             case 'f':
+                /*4 is for Block Operations
+                //a is for Logging Operations
+                f is for System operations */
                 stackAmendments.add("None");
                 stackAmendments.add("None");
-                //System Operations
+                String errorMessage = "No suitable implementation for (" + theCode + " "
+                        + findOpcodeName(theCode) + ") found";
+                try {
+                    throw new NoImplementationException(errorMessage);
+                } catch (NoImplementationException e) {
+                    e.printStackTrace();
+                }
+                //Block Operations
                 break;
             default:
                 throw new RuntimeException("Unreachable");
