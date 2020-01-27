@@ -4,13 +4,13 @@ public class FormatBytecode {
     public FormatBytecode(HashMap<List<String>, List<String>> data) throws IndexOutOfBoundsException {
         try {
             formattedData = new ArrayList<String>();
-            Iterator dataIterator = data.entrySet().iterator();
             List<String> temp = new ArrayList<String>();
             List<String> arg1 = new ArrayList<String>();
             List<String> arg2 = new ArrayList<String>();
             Object tempObj;
             int counter = 0;
             String code, name, added, removed;
+            Iterator dataIterator = data.entrySet().iterator();
             while (dataIterator.hasNext()) {
                 Map.Entry pair = (Map.Entry) dataIterator.next();
                 tempObj = pair.getKey();

@@ -46,12 +46,13 @@ public class ComparisonOperations {
             return "00";
         }    }
 
-    public String iszero(String arg1, String arg2) {
-        if(!arg1.matches(arg2)) {
+    public String iszero(String arg1) {
+        if(!arg1.matches("[0]+")) {
             return "01";
         }else {
             return "00";
-        }    }
+        }
+    }
 
     public String and(String arg1, String arg2) {
         return null;

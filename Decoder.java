@@ -2,14 +2,16 @@ import java.util.*;
 public class Decoder {
 
     private FullOpcodeList list = new FullOpcodeList();
-
+    private String address = "0xE0e9794A17aa5166c164b80fA0b126c72E5412B0";
     private String bytecode = "0x68466bad7e2343211320d5dcc03764c0ba522ad7aa22a9076d94f7a7519121dcaabbss1122ab01";
+    //private String bytecode = "0x608060405234801561001057600080fd5b506040516020806103ee833981018060405281019080805190602001909291905050508060008190555080600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002081905550506103608061008e6000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806318160ddd1461005c57806370a0823114610087578063a9059cbb146100de575b600080fd5b34801561006857600080fd5b50610071610143565b6040518082815260200191505060405180910390f35b34801561009357600080fd5b506100c8600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919050505061014c565b6040518082815260200191505060405180910390f35b3480156100ea57600080fd5b50610129600480360381019080803573ffffffffffffffffffffffffffffffffffffffff16906020019092919080359060200190929190505050610195565b604051808215151515815260200191505060405180910390f35b60008054905090565b6000600160008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b60008073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16141515156101d257600080fd5b600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002054821115151561022057600080fd5b81600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205403600160003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555081600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000205401600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000208190555060019050929150505600a165627a7a7230582025608b5c372888ca7316c16f1748775824bc03cb64852867e119a10a03402ef500290000000000000000000000000000000000000000000000000000000000000000";
     private List<String> theOpcodes = new ArrayList<String>();
-    //HashMap contains [Code, Name], data added to stack (optional)
+    //HashMap contains [Code, Name], [added to stack, removed from stack]
     private HashMap<List<String>, List<String>> decoded = new HashMap<List<String>, List<String>>();
     public final List<Opcode> allOpcodes = list.getList();
     private Opcode myCode = new Opcode();
     public Stack stack = new Stack();
+    public Stack memory = new Stack();
     private StopAndArithmetic completeArithmeticOps = new StopAndArithmetic();
 
     public Decoder() {
@@ -91,6 +93,7 @@ public class Decoder {
                 //SHA3
                 break;
             case '3':
+                doEnvironmentalOps(theCode);
                 stackAmendments.add("None");
                 stackAmendments.add("None");
                 //Environmental Operations
@@ -107,7 +110,7 @@ public class Decoder {
                     stackAmendments.add("None");
                     stackAmendments.add(stack.get(0));
                 }else {
-                    stackOperations(theCode);
+                    stackAmendments = stackOperations(theCode);
                 }
                 break;
             case '6':
@@ -223,13 +226,32 @@ public class Decoder {
         return additionalInfo;
     }
 
-    private void stackOperations(String theCode) {
-        StackMemory temp = new StackMemory();
-        String methodToCall = temp.getOpcodeName(theCode).toLowerCase();
+    private List<String> stackOperations(String theCode) {
+        List<String> additionalInfo = new ArrayList<String>();
+        //String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
+        String memWord, stackWord;
+        if(theCode.matches("51")) {
+            additionalInfo.add(memory.get(0));
+            additionalInfo.add(stack.get(0));
+            stack.replace(0, memory.get(0));
+            memory.pop();
+        }else if(theCode.matches("52")) {
+            memWord = stack.get(0) + stack.get(1);
+            additionalInfo.add("None");
+            additionalInfo.add(stack.get(0) + ", " + stack.get(1));
+            stack.pop();
+            stack.pop();
+            memory.push(memWord);
+        }
+        //To do 53, 54, 55, 58, 59, 5a
+        return additionalInfo;
+    }
+
+    private void invokeMemoryOps(String methodName) {
         try {
             Class<?> myClass = Class.forName("StackMemory");
-            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall);
-            method.invoke(temp);
+            java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName);
+            method.invoke(completeArithmeticOps);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch(IllegalAccessException e) {
@@ -238,6 +260,13 @@ public class Decoder {
             e.printStackTrace();
         } catch(ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void doEnvironmentalOps(String theCode) {
+        if(theCode.matches("33")) {
+            stack.pop();
+            stack.push(address);
         }
     }
 

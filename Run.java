@@ -1,6 +1,6 @@
 public class Run {
     /*
-        Class to start starts the system
+        Class that starts the system
      */
     public static void main(String [] args) {
         new Decoder();

@@ -1,13 +1,19 @@
 import java.util.*;
 public class EnvironmentalInfo {
     List <Opcode> allCodes = new ArrayList<Opcode>();
+    private String callerAddr, dataLoad;
     public EnvironmentalInfo() {
         populateCodeList();
     }
 
+    public EnvironmentalInfo(String address, String load) {
+        this.callerAddr = address;
+        this.dataLoad = load;
+    }
+
     //get addrress of currently executing account
     public String getAddress() {
-        return "";
+        return callerAddr;
     }
 
     //get balance of a given account with address arg
@@ -25,8 +31,8 @@ public class EnvironmentalInfo {
         return "";
     }
 
-    public void callValue() {
-        //Placeholder
+    public String callValue() {
+        return "00";
     }
 
     //call data starting from given position

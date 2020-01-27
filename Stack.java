@@ -6,7 +6,7 @@ public class Stack {
     }
 
     public void push(String info) {
-        this.theStack.add(info);
+        this.theStack.add(0, info);
     }
 
     public void pop() {
@@ -15,7 +15,7 @@ public class Stack {
 
     public String get(int arg) {
         try {
-            if (arg > theStack.size()) {
+            if (arg >= theStack.size()) {
                 throw new IllegalArgumentException("The stack element requested does not exist");
             } else {
                 return this.theStack.get(arg);
@@ -25,15 +25,19 @@ public class Stack {
         }
     }
 
-    public List<String> getStack() {
-        return this.theStack;
-    }
-
     public void swapElements(int toSwap) {
         Collections.swap(this.theStack, 0, toSwap);
     }
 
     public boolean nextZero() {
         return (Integer.parseInt(this.theStack.get(1)) == 0);
+    }
+
+    public void replace(int index, String newData) {
+        this.theStack.set(index, newData);
+    }
+
+    public List<String> getStack() {
+        return this.theStack;
     }
 }

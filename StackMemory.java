@@ -7,31 +7,6 @@ public class StackMemory {
     }
 
 
-    //Load word from memory
-    public void mload() {
-
-    }
-
-    //Save word to memory
-    public void mstore() {
-
-    }
-
-    //Save byte to memory
-    public void mstores() {
-
-    }
-
-    //load word from storage
-    public void sload() {
-
-    }
-
-    //Save word to storage
-    public void sstore() {
-
-    }
-
     //Jump to location
     public void jump() {
 
