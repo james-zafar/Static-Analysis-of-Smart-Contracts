@@ -52,15 +52,20 @@ public class StopAndArithmetic{
     }
 
     public String getOpcodeName(String code) {
-        for(Opcode i : allCodes) {
-            if(i.getCode().matches(code)) {
-                if(i.getName().matches("SMOD")) {
-                    return "MOD";
-                }else if(i.getName().matches("SDIV")) {
-                    return "DIV";
+        try {
+            for (Opcode i : allCodes) {
+                if (i.getCode().matches(code)) {
+                    if (i.getName().matches("SMOD")) {
+                        return "MOD";
+                    } else if (i.getName().matches("SDIV")) {
+                        return "DIV";
+                    }
+                    return i.getName();
                 }
-                return i.getName();
             }
+            throw new UnknownOpcodeException("The opcode " + code + " does not exist");
+        }catch(UnknownOpcodeException e) {
+            e.printStackTrace();;
         }
         return null;
     }

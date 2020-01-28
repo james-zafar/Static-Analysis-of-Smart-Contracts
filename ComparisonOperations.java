@@ -79,12 +79,17 @@ public class ComparisonOperations {
     }
 
     public String getOpcodeName(String code) {
-        for(Opcode i : allCodes) {
-            if(i.getCode().matches(code)) {
-                return i.getName();
+        try {
+            for (Opcode i : allCodes) {
+                if (i.getCode().matches(code)) {
+                    return i.getName();
+                }
             }
+            throw new UnknownOpcodeException("The opcode " + code + " does not exist");
+        }catch(UnknownOpcodeException e) {
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     private void populateOpcodeList() {

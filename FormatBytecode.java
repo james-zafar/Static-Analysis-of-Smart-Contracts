@@ -1,7 +1,7 @@
 import java.util.*;
 public class FormatBytecode {
     public List<String> formattedData;
-    public FormatBytecode(HashMap<List<String>, List<String>> data) throws IndexOutOfBoundsException {
+    public FormatBytecode(Map<List<String>, List<String>> data) throws IndexOutOfBoundsException {
         try {
             formattedData = new ArrayList<String>();
             List<String> temp = new ArrayList<String>();
