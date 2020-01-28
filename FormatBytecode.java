@@ -4,19 +4,18 @@ public class FormatBytecode {
     public FormatBytecode(Map<List<String>, List<String>> data) throws IndexOutOfBoundsException {
         try {
             formattedData = new ArrayList<String>();
-            List<String> temp = new ArrayList<String>();
             List<String> arg1 = new ArrayList<String>();
             List<String> arg2 = new ArrayList<String>();
             Object tempObj;
-            int counter = 0;
-            String code, name, added, removed;
+            String counter, code, name, added, removed;
             Iterator dataIterator = data.entrySet().iterator();
             while (dataIterator.hasNext()) {
                 Map.Entry pair = (Map.Entry) dataIterator.next();
                 tempObj = pair.getKey();
                 arg1 = castObject(tempObj);
-                code = arg1.get(0);
-                name = arg1.get(1);
+                counter = arg1.get(0);
+                code = arg1.get(1);
+                name = arg1.get(2);
                 tempObj = pair.getValue();
                 arg2 = castObject(tempObj);
                 //If statement is temp until all opcodes are fully functional
@@ -29,20 +28,19 @@ public class FormatBytecode {
                 }
                 formattedData.add(formatData(counter, code, name, added, removed));
                 dataIterator.remove();
-                counter++;
             }
         }catch(IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
     }
 
-    private String formatData(int counter, String code, String name, String added, String removed) {
-        StringBuilder sb = new StringBuilder("");
-        sb.append(String.format("%03d", counter));
-        sb.append(" " + code);
-        sb.append(" " + name);
-        sb.append(" " + added);
-        sb.append(" " + removed);
+    private String formatData(String counter, String code, String name, String added, String removed) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%03d", Integer.parseInt(counter)));
+        sb.append(" ").append(code);
+        sb.append(" ").append(name);
+        sb.append(" ").append(added);
+        sb.append(" ").append(removed);
         return sb.toString();
     }
 

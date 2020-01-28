@@ -34,18 +34,19 @@ public class Decoder {
         finished = formatter.getFormattedData();
         //Output the finished reverse engineered data
         finished.forEach(current -> System.out.print(current + "\n"));
+        //opcodesFound.forEach(x -> System.out.print(x + ", "));
     }
 
     private void runDecoder() {
         List<String> additionalData;
         String current, opcodeName;
         //System.out.println(bytecode);
+        int instructionNo = 0;
         while(bytecode.length() > 0) {
             current = bytecode.substring(0, 2);
             List<String> tempList = new ArrayList<String>();
             if(isOpcode(current)) {
-                //System.out.println("Currently doing: " + current);
-                //System.out.println("Stack: " + Arrays.toString(stack.getStack().toArray()));
+                tempList.add(Integer.toString(instructionNo));
                 tempList.add(current);
                 opcodeName = findOpcodeName(current);
                 tempList.add(opcodeName);
@@ -55,20 +56,21 @@ public class Decoder {
                 decoded.put(tempList, additionalData);
             }else {
                 /*If not opcode assumed to be function hash*/
-                bytecode = bytecode.substring(2);
+                findFunctionHash();
             }
+            instructionNo++;
             //System.out.println(bytecode);
             /*Use to print out the Stack */
             //System.out.println(Arrays.toString(stack.getStack().toArray()));;
         }
     }
 
+    private void findFunctionHash() {
+
+    }
+
     private boolean isOpcode(String check) {
-        if(findOpcodeName(check) == null) {
-            return false;
-        }else {
-            return true;
-        }
+            return (findOpcodeName(check) != null);
     }
 
     private String findOpcodeName(String opcode) {
@@ -82,7 +84,7 @@ public class Decoder {
             }
             throw new UnknownOpcodeException("Error, invalid opcode: " + opcode);
         }catch(UnknownOpcodeException e) {
-            //System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -161,14 +163,14 @@ public class Decoder {
                 f is for System operations */
                 stackAmendments.add("None");
                 stackAmendments.add("None");
-                if(!theCode.equals("ff")) {
-                    String errorMessage = "No suitable implementation for (" + theCode + " "
-                            + findOpcodeName(theCode) + ") found";
-                    try {
+                try {
+                    if(!theCode.equals("ff")) {
+                        String errorMessage = "No suitable implementation for (" + theCode + " "
+                                + findOpcodeName(theCode) + ") found";
                         throw new NoImplementationException(errorMessage);
-                    } catch (NoImplementationException e) {
-                        System.out.println(e.getMessage());
                     }
+                } catch (NoImplementationException e) {
+                    System.out.println(e.getMessage());
                 }
                 //Block Operations
                 break;

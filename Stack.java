@@ -5,7 +5,7 @@ public class Stack {
         theStack = new ArrayList<String>();
     }
 
-    public void push(String info) {
+    public void push(String info) throws RuntimeException {
         if(info == null) {
             throw new RuntimeException("Tried to push null to the stack");
         }else {
