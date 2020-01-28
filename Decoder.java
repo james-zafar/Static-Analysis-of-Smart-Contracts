@@ -10,6 +10,7 @@ public class Decoder {
     //HashMap contains [Code, Name], [added to stack, removed from stack]
     private Map<List<String>, List<String>> decoded;
     public final List<Opcode> allOpcodes;
+    private List<String> opcodesFound;
     public Stack stack, memory;
     private StopAndArithmetic completeArithmeticOps;
 
@@ -19,6 +20,7 @@ public class Decoder {
         stack = new Stack();
         memory = new Stack();
         allOpcodes = list.getList();
+        opcodesFound = new ArrayList<String>();
         completeArithmeticOps = new StopAndArithmetic();
 
         //Remove leading 0x in any input bytecode
@@ -47,10 +49,12 @@ public class Decoder {
                 tempList.add(current);
                 opcodeName = findOpcodeName(current);
                 tempList.add(opcodeName);
+                opcodesFound.add(opcodeName);
                 bytecode = bytecode.substring(2);
                 additionalData = getAdditionalInfo(current);
                 decoded.put(tempList, additionalData);
             }else {
+                /*If not opcode assumed to be function hash*/
                 bytecode = bytecode.substring(2);
             }
             //System.out.println(bytecode);
@@ -100,7 +104,7 @@ public class Decoder {
                 try {
                     throw new NoImplementationException("No SHA3 Implementation exists");
                 } catch (NoImplementationException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
                 //SHA3
                 break;
@@ -157,12 +161,14 @@ public class Decoder {
                 f is for System operations */
                 stackAmendments.add("None");
                 stackAmendments.add("None");
-                String errorMessage = "No suitable implementation for (" + theCode + " "
-                        + findOpcodeName(theCode) + ") found";
-                try {
-                    throw new NoImplementationException(errorMessage);
-                } catch (NoImplementationException e) {
-                    e.printStackTrace();
+                if(!theCode.equals("ff")) {
+                    String errorMessage = "No suitable implementation for (" + theCode + " "
+                            + findOpcodeName(theCode) + ") found";
+                    try {
+                        throw new NoImplementationException(errorMessage);
+                    } catch (NoImplementationException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 //Block Operations
                 break;
@@ -218,6 +224,11 @@ public class Decoder {
 
     private List<String> arithmeticOp(String theCode) {
         List<String> additionalInfo = new ArrayList<String>();
+        if(theCode.matches("00")) {
+            additionalInfo.add("None");
+            additionalInfo.add("None");
+            return additionalInfo;
+        }
         String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
         String arg1 = stack.get(0);
         String arg2 = stack.get(1);

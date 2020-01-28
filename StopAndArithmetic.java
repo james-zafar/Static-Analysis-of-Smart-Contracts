@@ -22,8 +22,17 @@ public class StopAndArithmetic{
     }
 
     public String div(String arg1, String arg2) {
-        int ans = (int) (Integer.parseInt(arg1, 16) / Integer.parseInt(arg2, 16));
-        return Integer.toHexString(ans);
+        try {
+            int ans = (int) (Integer.parseInt(arg1, 16) / Integer.parseInt(arg2, 16));
+            return Integer.toHexString(ans);
+        } catch(ArithmeticException ex) {
+            try {
+                throw new UncheckedException("Error, can not divide by 0", ex);
+            }catch(UncheckedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return "00";
     }
 
     public String mod(String arg1, String arg2) {
@@ -52,7 +61,7 @@ public class StopAndArithmetic{
     }
 
     public String getOpcodeName(String code) {
-        try {
+        try{
             for (Opcode i : allCodes) {
                 if (i.getCode().matches(code)) {
                     if (i.getName().matches("SMOD")) {

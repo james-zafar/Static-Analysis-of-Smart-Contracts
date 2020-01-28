@@ -46,7 +46,7 @@ public class ComparisonOperations {
             return "00";
         }    }
 
-    public String iszero(String arg1) {
+    public String iszero(String arg1, String arg2) {
         if(!arg1.matches("[0]+")) {
             return "01";
         }else {
@@ -55,23 +55,27 @@ public class ComparisonOperations {
     }
 
     public String and(String arg1, String arg2) {
-        return null;
+        if(arg1.matches("[0]+") && arg2.matches("[0]+")) {
+            return "01";
+        }else {
+            return "00";
+        }
     }
 
     public String or(String arg1, String arg2) {
-        return null;
+        return "00";
     }
 
     public String xor(String arg1, String arg2) {
-        return null;
+        return "00";
     }
 
     public String not(String arg1, String arg2) {
-        return null;
+        return "00";
     }
 
     public String byte1(String arg1, String arg2) {
-        return null;
+        return "00";
     }
 
     public List<Opcode> getAllCodes() {

@@ -6,7 +6,11 @@ public class Stack {
     }
 
     public void push(String info) {
-        this.theStack.add(0, info);
+        if(info == null) {
+            throw new RuntimeException("Tried to push null to the stack");
+        }else {
+            this.theStack.add(0, info);
+        }
     }
 
     public void pop() {
