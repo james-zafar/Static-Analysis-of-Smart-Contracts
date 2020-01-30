@@ -33,8 +33,9 @@ public class Decoder {
         FormatBytecode formatter = new FormatBytecode(decoded);
         finished = formatter.getFormattedData();
         //Output the finished reverse engineered data
-        finished.forEach(current -> System.out.print(current + "\n"));
+        //finished.forEach(current -> System.out.print(current + "\n"));
         //opcodesFound.forEach(x -> System.out.print(x + ", "));
+        new CreateProgramFlow(opcodesFound, finished);
     }
 
     private void runDecoder() {
@@ -57,6 +58,7 @@ public class Decoder {
             }else {
                 /*If not opcode assumed to be function hash*/
                 findFunctionHash();
+                bytecode = bytecode.substring(2);
             }
             instructionNo++;
             //System.out.println(bytecode);
@@ -70,7 +72,7 @@ public class Decoder {
     }
 
     private boolean isOpcode(String check) {
-            return (findOpcodeName(check) != null);
+        return (findOpcodeName(check) != null);
     }
 
     private String findOpcodeName(String opcode) {
@@ -208,7 +210,6 @@ public class Decoder {
     private List<String> duplicateStackItem(String theCode) {
         List<String> info = new ArrayList<String>();
         int stackNumber = Character.digit((theCode.charAt(theCode.length() - 1)), 16);
-        //System.out.println(theCode + " - " + stackNumber);
         info.add(stack.get(stackNumber));
         stack.push(stack.get(stackNumber));
         info.add("None");
@@ -252,26 +253,24 @@ public class Decoder {
     }
 
     private List<String> stackOperations(String theCode) {
-      List<String> additionalInfo = new ArrayList<String>();
-    /*    //String methodToCall = completeArithmeticOps.getOpcodeName(theCode).toLowerCase();
-        String memWord;
-        if(theCode.matches("51")) {
-            additionalInfo.add(memory.get(0));
-            additionalInfo.add(stack.get(0));
-            stack.replace(0, memory.get(0));
-            memory.pop();
-        }else if(theCode.matches("52")) {
-            memWord = stack.get(0) + stack.get(1);
+        List<String> additionalInfo = new ArrayList<String>();
+        String stackPos;
+        if(theCode.matches("56")) {
+            stackPos = "JUMP " + stack.get(0);
+            additionalInfo.add(stackPos);
             additionalInfo.add("None");
-            additionalInfo.add(stack.get(0) + ", " + stack.get(1));
-            stack.pop();
-            stack.pop();
-            memory.push(memWord);
+        }else if(theCode.matches("57")) {
+            if(stack.get(1).matches("[0]+")) {
+                stackPos = "VALID " + stack.get(0);
+            }else {
+                stackPos = "INVALID";
+            }
+            additionalInfo.add(stackPos);
+            additionalInfo.add("None");
+        }else {
+            additionalInfo.add("None");
+            additionalInfo.add("None");
         }
-        //To do 53, 54, 55, 58, 59, 5a
-        return additionalInfo;*/
-        additionalInfo.add("None");
-        additionalInfo.add("None");
         return additionalInfo;
     }
 
