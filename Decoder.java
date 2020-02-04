@@ -29,13 +29,17 @@ public class Decoder {
         }
         runDecoder();
         /*Use to print out Has Map */
-        //System.out.println(Arrays.asList(decoded));
+        //System.out.println(Arrays.deepToString(decoded.entrySet().toArray()));
         FormatBytecode formatter = new FormatBytecode(decoded);
         finished = formatter.getFormattedData();
         //Output the finished reverse engineered data
         //finished.forEach(current -> System.out.print(current + "\n"));
         //opcodesFound.forEach(x -> System.out.print(x + ", "));
-        new CreateProgramFlow(opcodesFound, finished);
+        try {
+            new CreateProgramFlow(opcodesFound, finished);
+        }catch(ProgramFlowException e) {
+            e.printStackTrace();
+        }
     }
 
     private void runDecoder() {
@@ -61,7 +65,6 @@ public class Decoder {
                 bytecode = bytecode.substring(2);
             }
             instructionNo++;
-            //System.out.println(bytecode);
             /*Use to print out the Stack */
             //System.out.println(Arrays.toString(stack.getStack().toArray()));;
         }
@@ -140,11 +143,11 @@ public class Decoder {
                     bytecode = bytecode.substring(2);
                 }else {
                     while (counter <= (noBytes + 1)) {
-                        sb.append(bytecode.substring(0, 2)).append(" ");
-                        stack.push(bytecode.substring(0, 2));
+                        sb.append(bytecode.substring(0, 2));
                         bytecode = bytecode.substring(2);
                         counter++;
                     }
+                    stack.push(sb.toString());
                 }
                 stackAmendments.add(sb.toString());
                 stackAmendments.add("None");

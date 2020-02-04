@@ -46,6 +46,7 @@ public class FormatBytecode {
 
     @SuppressWarnings("unchecked")
     private  <T extends List<?>> T castObject(Object obj) {
+
         return (T) obj;
     }
 
