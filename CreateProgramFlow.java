@@ -3,25 +3,31 @@ public class CreateProgramFlow {
     public HashMap<Integer, ArrayList<String>> programFlow;
     private List<String> finished;
     private List<String> opcodes;
-    private List<Integer> index;
+    private List<String> index;
     int i, branchNumber = 1;
+    private boolean addToBranch = false;
     public CreateProgramFlow(List<String> opcodes, List<String> finished) throws ProgramFlowException {
         this.finished = finished;
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<String>();
         programFlow = new HashMap<Integer, ArrayList<String>>();
-        index = new ArrayList<Integer>();
+        index = new ArrayList<String>();
         for(i = 0; i < opcodes.size(); i++) {
-            currentBranch = new ArrayList<String>();
-            index.add(i);
+            if(addToBranch) {
+                currentBranch = new ArrayList<String>();
+                addToBranch = false;
+            }
             manageOpcode(this.opcodes.get(i), currentBranch);
         }
+
         if(!currentBranch.isEmpty()) {
             addBranch(currentBranch);
         }
+        if(!index.isEmpty()) {
+            missedOpcodes();
+        }
 
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
-            ArrayList<String> temp1 = programFlow.get(1);
             String listString = String.join(", ", entry.getValue());
             System.out.println("Key = " + entry.getKey() + ", Value = " + listString);
         }
@@ -30,9 +36,28 @@ public class CreateProgramFlow {
 
     }
 
-    private void missedOpcodes(List<Integer> codes) {
-        List<Integer> missedOpcodes = new ArrayList<Integer>();
-
+    private void missedOpcodes() throws ProgramFlowException {
+        int start, finish;
+        while(index.size() > 0) {
+            String temp = index.get(0);
+            List<String> tempArr = Arrays.asList(temp.split("\\s+"));
+            start = Integer.parseInt(tempArr.get(0));
+            finish = Integer.parseInt(tempArr.get(1));
+            ArrayList<String> currentBranch = new ArrayList<String>();
+            for(int i = start; i <= finish; i++) {
+                if(addToBranch) {
+                    currentBranch = new ArrayList<String>();
+                    addToBranch = false;
+                }
+                manageOpcode(this.opcodes.get(i), currentBranch);
+            }
+            if(!currentBranch.isEmpty()) {
+                addBranch(currentBranch);
+            }
+            if(!index.isEmpty()) {
+                missedOpcodes();
+            }
+        }
     }
 
     private void manageOpcode(String code, ArrayList<String> branch) throws ProgramFlowException {
@@ -59,6 +84,7 @@ public class CreateProgramFlow {
         }
         programFlow.put(branchNumber, currentBranch);
         branchNumber++;
+        addToBranch = true;
     }
 
     private void doJump(ArrayList<String> currentBranch) throws ProgramFlowException {
@@ -68,6 +94,8 @@ public class CreateProgramFlow {
         try {
             if (opcodes.get(Integer.parseInt(jumpToLocation)).matches("JUMPDEST")) {
                 //This marks a valid jump
+                String checkLater = Integer.toString(i) + " " + jumpToLocation;
+                index.add(checkLater);
                 i = Integer.parseInt(split.get(4), 16) - 1;
                 split.set(3, "None");
                 split.remove(4);
@@ -84,7 +112,6 @@ public class CreateProgramFlow {
         }finally {
             addFailedJump(split, "The jump location does not exist", currentBranch);
             i++;
-            index.add(i);
             manageOpcode(this.opcodes.get(i), currentBranch);
         }
     }
