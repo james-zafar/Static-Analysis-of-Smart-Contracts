@@ -35,11 +35,7 @@ public class Decoder {
         //Output the finished reverse engineered data
         //finished.forEach(current -> System.out.print(current + "\n"));
         //opcodesFound.forEach(x -> System.out.print(x + ", "));
-        try {
-            new CreateProgramFlow(opcodesFound, finished);
-        }catch(ProgramFlowException e) {
-            e.printStackTrace();
-        }
+        new CreateProgramFlow(opcodesFound, finished);
     }
 
     private void runDecoder() {
@@ -168,16 +164,20 @@ public class Decoder {
                 f is for System operations */
                 stackAmendments.add("None");
                 stackAmendments.add("None");
-                try {
-                    if(!theCode.equals("ff")) {
-                        String errorMessage = "No suitable implementation for (" + theCode + " "
-                                + findOpcodeName(theCode) + ") found";
-                        throw new NoImplementationException(errorMessage);
+                if(theCode.matches("f3")) {
+                    stackAmendments.add("None");
+                    stackAmendments.add("None");
+                }else {
+                    try {
+                        if (!theCode.equals("ff")) {
+                            String errorMessage = "No suitable implementation for (" + theCode + " "
+                                    + findOpcodeName(theCode) + ") found";
+                            throw new NoImplementationException(errorMessage);
+                        }
+                    } catch (NoImplementationException e) {
+                        System.out.println(e.getMessage());
                     }
-                } catch (NoImplementationException e) {
-                    System.out.println(e.getMessage());
                 }
-                //Block Operations
                 break;
             default:
                 throw new RuntimeException("Unreachable");
@@ -197,7 +197,7 @@ public class Decoder {
         stack.pop();
         String methodName = classRef.getOpcodeName(theCode).toLowerCase();
         try {
-            Class<?> myClass = Class.forName("ComparisonOperations");
+            Class <?> myClass = Class.forName("ComparisonOperations");
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName, String.class, String.class);
             Object result = method.invoke(classRef, arg1, arg2);
             res = (String) result;
@@ -240,7 +240,7 @@ public class Decoder {
         String arg2 = stack.get(1);
         String removed = arg1 + ", " + arg2;
         try {
-            Class<?> myClass = Class.forName("StopAndArithmetic");
+            Class <?> myClass = Class.forName("StopAndArithmetic");
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodToCall, String.class, String.class);
             Object result = method.invoke(completeArithmeticOps, arg1, arg2);
             String res = (String) result;
@@ -279,7 +279,7 @@ public class Decoder {
 
     private void invokeMemoryOps(String methodName) {
         try {
-            Class<?> myClass = Class.forName("StackMemory");
+            Class <?> myClass = Class.forName("StackMemory");
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName);
             method.invoke(completeArithmeticOps);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {

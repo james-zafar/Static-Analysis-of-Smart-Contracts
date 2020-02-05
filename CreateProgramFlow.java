@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 public class CreateProgramFlow {
     public HashMap<Integer, ArrayList<String>> programFlow;
@@ -6,7 +7,7 @@ public class CreateProgramFlow {
     private List<String> index;
     int i, branchNumber = 1;
     private boolean addToBranch = false;
-    public CreateProgramFlow(List<String> opcodes, List<String> finished) throws ProgramFlowException {
+    public CreateProgramFlow(List<String> opcodes, List<String> finished) {
         this.finished = finished;
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<String>();
@@ -36,14 +37,17 @@ public class CreateProgramFlow {
 
     }
 
-    private void missedOpcodes() throws ProgramFlowException {
+    private void missedOpcodes() {
         int start, finish;
+        String temp;
+        List<String> tempArr;
+        ArrayList<String> currentBranch;
         while(index.size() > 0) {
-            String temp = index.get(0);
-            List<String> tempArr = Arrays.asList(temp.split("\\s+"));
+            temp = index.get(0);
+            tempArr = Arrays.asList(temp.split("\\s+"));
             start = Integer.parseInt(tempArr.get(0));
             finish = Integer.parseInt(tempArr.get(1));
-            ArrayList<String> currentBranch = new ArrayList<String>();
+            currentBranch = new ArrayList<String>();
             for(int i = start; i <= finish; i++) {
                 if(addToBranch) {
                     currentBranch = new ArrayList<String>();
@@ -51,6 +55,7 @@ public class CreateProgramFlow {
                 }
                 manageOpcode(this.opcodes.get(i), currentBranch);
             }
+            index.remove(0);
             if(!currentBranch.isEmpty()) {
                 addBranch(currentBranch);
             }
@@ -60,21 +65,25 @@ public class CreateProgramFlow {
         }
     }
 
-    private void manageOpcode(String code, ArrayList<String> branch) throws ProgramFlowException {
-        switch(code) {
-            case "JUMP":
-                addBranch(branch);
-                doJump(branch);
-                break;
-            case "JUMPI":
-                doJumpI(branch);
-                break;
-            case "SELFDESTRUCT":
-            case "STOP":
-                addKill(branch);
-                break;
-            default:
-                branch.add(finished.get(i));
+    private void manageOpcode(String code, ArrayList<String> branch) {
+        try {
+            switch (code) {
+                case "JUMP":
+                    addBranch(branch);
+                    doJump(branch);
+                    break;
+                case "JUMPI":
+                    doJumpI(branch);
+                    break;
+                case "SELFDESTRUCT":
+                case "STOP":
+                    addKill(branch);
+                    break;
+                default:
+                    branch.add(finished.get(i));
+            }
+        }catch(ProgramFlowException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,11 +113,7 @@ public class CreateProgramFlow {
                 addFailedJump(split, "Jump conditions not met", currentBranch);
             }
         }catch(IndexOutOfBoundsException e) {
-            try {
                 throw new ProgramFlowException("The jump location does not exist", e);
-            }catch(ProgramFlowException ex) {
-                ex.printStackTrace();
-            }
         }finally {
             addFailedJump(split, "The jump location does not exist", currentBranch);
             i++;
