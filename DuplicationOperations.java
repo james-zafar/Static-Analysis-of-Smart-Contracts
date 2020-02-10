@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class DuplicationOperations {
     List<Opcode> allCodes = new ArrayList<Opcode>();
 

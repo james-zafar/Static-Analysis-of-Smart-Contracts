@@ -1,4 +1,6 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class FullOpcodeList {
     private ComparisonOperations ComparisonOps = new ComparisonOperations();
     private BlockOperations blockOps = new BlockOperations();

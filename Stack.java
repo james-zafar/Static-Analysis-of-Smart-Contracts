@@ -20,11 +20,11 @@ public class Stack {
     public String get(int arg) {
         try {
             if (arg >= theStack.size()) {
-                throw new IllegalArgumentException("The stack element requested does not exist");
+                throw new IndexOutOfBoundsException("The stack element requested does not exist");
             } else {
                 return this.theStack.get(arg);
             }
-        }catch(IllegalArgumentException e) {
+        }catch(IndexOutOfBoundsException e) {
             throw new RuntimeException("Could not retrieve element at index " + arg , e);
         }
     }
