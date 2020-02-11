@@ -1,3 +1,5 @@
+import src.decode.Decoder;
+
 public class Run {
     /*
         Class that starts the system
