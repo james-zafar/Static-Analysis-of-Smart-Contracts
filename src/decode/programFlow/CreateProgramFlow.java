@@ -14,21 +14,21 @@ public class CreateProgramFlow {
     private List<String> finished;
     private List<String> opcodes;
     private List<String> index;
-    int i, branchNumber = 1;
+    int current, branchNumber = 1;
     private boolean addToBranch = false;
     public CreateProgramFlow(List<String> opcodes, List<String> finished) {
         this.finished = finished;
         this.opcodes = opcodes;
-        ArrayList<String> currentBranch = new ArrayList<String>();
+        ArrayList<String> currentBranch = new ArrayList<>();
         programFlow = new HashMap<Integer, ArrayList<String>>();
-        index = new ArrayList<String>();
-        for(i = 0; i < opcodes.size(); i++) {
+        index = new ArrayList<>();
+        for(current = 0; current < opcodes.size(); current++) {
             if(addToBranch) {
-                currentBranch = new ArrayList<String>();
+                currentBranch = new ArrayList<>();
                 addToBranch = false;
             }
-            manageOpcode(this.opcodes.get(i), currentBranch);
-            if(i == opcodes.size()) {
+            manageOpcode(this.opcodes.get(current), currentBranch);
+            if(current == opcodes.size()) {
                 addBranch(currentBranch);
             }
         }
@@ -53,7 +53,7 @@ public class CreateProgramFlow {
         int start, finish;
         String temp;
         List<String> tempArr;
-        ArrayList<String> currentBranch =  new ArrayList<String>();;
+        ArrayList<String> currentBranch =  new ArrayList<String>();
         try {
             branchNumber = findReservedBranch();
             programFlow.remove(branchNumber);
@@ -67,14 +67,13 @@ public class CreateProgramFlow {
             start = Integer.parseInt(tempArr.get(0));
             finish = Integer.parseInt(tempArr.get(1));
             System.out.println("Starting at: " + start + " Finishing at: " + finish);
-            for(int j = start; j < finish; j++) {
-                System.out.println("j = " + j + ", start = " + start + ", finish = " + finish);
-                System.out.println("With... " + this.opcodes.get(j));
+            for(current = start; current < finish; current++) {
+                System.out.println("j = " + current + ", start = " + start + ", finish = " + finish);
+                System.out.println("With... " + this.opcodes.get(current));
                 if(addToBranch) {
                     currentBranch = new ArrayList<String>();
                     addToBranch = false;
                 }
-                manageOpcode(this.opcodes.get(j), currentBranch);
             }
             index.remove(0);
             if(!currentBranch.isEmpty()) {
@@ -110,7 +109,7 @@ public class CreateProgramFlow {
                     addKill(branch);
                     break;
                 default:
-                    branch.add(finished.get(i));
+                    branch.add(finished.get(current));
             }
         }catch(ProgramFlowException e) {
             e.printStackTrace();
@@ -128,28 +127,30 @@ public class CreateProgramFlow {
     }
 
     private void addJump(ArrayList<String> currentBranch) throws ProgramFlowException {
-        String temp = finished.get(i);
-        List<String> split = new LinkedList<String>(Arrays.asList(temp.split("\\s+")));
+        String temp = finished.get(current);
+        List<String> split = new LinkedList<>(Arrays.asList(temp.split("\\s+")));
         String jumpToLocation = split.get(4).replaceAll("\\D+", "");
         try {
             if (opcodes.get(Integer.parseInt(jumpToLocation)).matches("JUMPDEST")) {
                 //This marks a valid jump
-                String checkLater = (i + 1) + " " + jumpToLocation;
+                String checkLater = (current + 1) + " " + jumpToLocation;
                 index.add(checkLater);
-                i = Integer.parseInt(split.get(4), 16) - 1;
+                current = Integer.parseInt(split.get(4), 16) - 1;
                 split.set(3, "None");
                 split.remove(4);
                 currentBranch.add(split.toString());
                 ArrayList<String> tempBranch = new ArrayList<String>();
                 tempBranch.add("Reserved");
                 addBranch(tempBranch);
+            }else {
+                addFailedJump(split, "Jump conditions not met", currentBranch);
             }
         }catch(IndexOutOfBoundsException e) {
+                addFailedJump(split, "The jump location does not exist", currentBranch);
                 throw new ProgramFlowException("The jump location does not exist", e);
         }finally {
-            addFailedJump(split, "The jump location does not exist", currentBranch);
-            i++;
-            manageOpcode(this.opcodes.get(i), currentBranch);
+            current++;
+            manageOpcode(this.opcodes.get(current), currentBranch);
         }
     }
 
@@ -162,18 +163,19 @@ public class CreateProgramFlow {
     }
 
     private void doJumpI(ArrayList<String> currentBranch) throws ProgramFlowException {
-        String info = finished.get(i);
+        String info = finished.get(current);
         if(info.contains("VALID")) {
             addJump(currentBranch);
         }else {
-            List<String> split = Arrays.asList(info.split("//s+"));
+            List<String> split = Arrays.asList(info.split("\\s+"));
+            split.forEach(curr -> System.out.print(curr + " AND "));
             split.set(2, "None");
             addBranch(currentBranch);
         }
     }
 
     private void addKill(ArrayList<String> currentBranch) {
-        currentBranch.add(finished.get(i));
+        currentBranch.add(finished.get(current));
         addBranch(currentBranch);
     }
 
