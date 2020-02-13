@@ -1,8 +1,7 @@
 package src.opcodes;
 
-import src.opcodes.Opcode;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 public class SystemOperations {
     List<Opcode> allCodes = new ArrayList<Opcode>();
 

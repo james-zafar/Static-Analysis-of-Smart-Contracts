@@ -66,10 +66,7 @@ public class CreateProgramFlow {
             tempArr = Arrays.asList(temp.split("\\s+"));
             start = Integer.parseInt(tempArr.get(0));
             finish = Integer.parseInt(tempArr.get(1));
-            System.out.println("Starting at: " + start + " Finishing at: " + finish);
             for(current = start; current < finish; current++) {
-                System.out.println("j = " + current + ", start = " + start + ", finish = " + finish);
-                System.out.println("With... " + this.opcodes.get(current));
                 if(addToBranch) {
                     currentBranch = new ArrayList<String>();
                     addToBranch = false;
@@ -168,7 +165,6 @@ public class CreateProgramFlow {
             addJump(currentBranch);
         }else {
             List<String> split = Arrays.asList(info.split("\\s+"));
-            split.forEach(curr -> System.out.print(curr + " AND "));
             split.set(2, "None");
             addBranch(currentBranch);
         }

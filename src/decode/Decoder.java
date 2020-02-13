@@ -48,7 +48,7 @@ public class Decoder {
         FormatBytecode formatter = new FormatBytecode(decoded);
         finished = formatter.getFormattedData();
         //Output the finished reverse engineered data
-        //finished.forEach(current -> System.out.print(current + "\n"));
+        //finished.forEach(current -> System.out.printSystem.out.print(current + "\n"));
         //opcodesFound.forEach(x -> System.out.print(x + ", "));
         new CreateProgramFlow(opcodesFound, finished);
     }

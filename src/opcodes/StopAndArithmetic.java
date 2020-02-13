@@ -1,10 +1,11 @@
 package src.opcodes;
 
+import src.exceptions.IllegalOperationException;
 import src.exceptions.UncheckedException;
 import src.exceptions.UnknownOpcodeException;
-import src.opcodes.Opcode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 public class StopAndArithmetic{
     List<Opcode> allCodes = new ArrayList<Opcode>();
 
@@ -12,24 +13,36 @@ public class StopAndArithmetic{
         populateOpcodeList();
     }
 
-    public String add(String arg1, String arg2) {
-        int ans = Integer.parseInt(arg1, 16) + Integer.parseInt(arg2, 16);
-        return Integer.toHexString(ans);
-    }
-
-    public String sub(String arg1, String arg2) {
-        int ans = Integer.parseInt(arg1, 16) - Integer.parseInt(arg2, 16);
-        return Integer.toHexString(ans);
-    }
-
-    public String mul(String arg1, String arg2) {
-        int ans = Integer.parseInt(arg1, 16) * Integer.parseInt(arg2, 16);
-        return Integer.toHexString(ans);
-    }
-
-    public String div(String arg1, String arg2) {
+    public String add(String arg1, String arg2) throws IllegalOperationException {
         try {
-            int ans = (int) (Integer.parseInt(arg1, 16) / Integer.parseInt(arg2, 16));
+            int ans = Integer.parseInt(arg1, 16) + Integer.parseInt(arg2, 16);
+            return Integer.toHexString(ans);
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: " + arg1 + " + " + arg2);
+        }
+    }
+
+    public String sub(String arg1, String arg2) throws IllegalOperationException {
+        try{
+            int ans = Integer.parseInt(arg1, 16) - Integer.parseInt(arg2, 16);
+            return Integer.toHexString(ans);
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: " + arg1 + " + " + arg2);
+        }
+    }
+
+    public String mul(String arg1, String arg2) throws IllegalOperationException {
+        try {
+            int ans = Integer.parseInt(arg1, 16) * Integer.parseInt(arg2, 16);
+            return Integer.toHexString(ans);
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: " + arg1 + " * " + arg2);
+        }
+    }
+
+    public String div(String arg1, String arg2) throws IllegalOperationException {
+        try {
+            int ans = Integer.parseInt(arg1, 16) / Integer.parseInt(arg2, 16);
             return Integer.toHexString(ans);
         } catch(ArithmeticException ex) {
             try {
@@ -37,18 +50,28 @@ public class StopAndArithmetic{
             }catch(UncheckedException e) {
                 System.out.println(e.getMessage());
             }
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: " + arg1 + " / " + arg2);
         }
         return "00";
     }
 
-    public String mod(String arg1, String arg2) {
-        int ans = Integer.parseInt(arg1, 16) % Integer.parseInt(arg2, 16);
-        return Integer.toHexString(ans);
+    public String mod(String arg1, String arg2) throws IllegalOperationException {
+        try {
+            int ans = Integer.parseInt(arg1, 16) % Integer.parseInt(arg2, 16);
+            return Integer.toHexString(ans);
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: " + arg1 + " % " + arg2);
+        }
     }
 
-    public String exp(String arg1, String arg2) {
-        int ans = (int) Math.pow(Integer.parseInt(arg1, 16), Integer.parseInt(arg2, 16));
-        return Integer.toHexString(ans);
+    public String exp(String arg1, String arg2) throws IllegalOperationException {
+        try {
+            int ans = (int) Math.pow(Integer.parseInt(arg1, 16), Integer.parseInt(arg2, 16));
+            return Integer.toHexString(ans);
+        }catch(NumberFormatException e) {
+            throw new IllegalOperationException("Error, arguments are not numbers: (" + arg1 + ")^" + arg2);
+        }
     }
 
     public byte addmod(byte valueOne, byte valueTwo, byte valueThree) {
@@ -80,7 +103,7 @@ public class StopAndArithmetic{
             }
             throw new UnknownOpcodeException("The opcode " + code + " does not exist");
         }catch(UnknownOpcodeException e) {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
         return null;
     }
