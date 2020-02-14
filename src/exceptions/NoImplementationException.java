@@ -1,5 +1,9 @@
 package src.exceptions;
 
+/**
+ * Exception classed used to deal with issues caused by opcode functions not being implemented
+ */
+
 public class NoImplementationException extends Exception {
     public NoImplementationException() {
         super("No suitable method found for this operation");

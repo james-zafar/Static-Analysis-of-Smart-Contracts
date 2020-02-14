@@ -1,10 +1,11 @@
 package src.exceptions;
 
-public class IllegalOperationException extends Exception {
+/**
+ * Exception class to handle math errors when parsing invalid parameters
+ * Usually used to deal with arithmetic exceptions
+ */
 
-    /*
-    Exception class to handle math errors when parsing invalid parameters
-     */
+public class IllegalOperationException extends Exception {
 
     public IllegalOperationException() {
         //Exception is thrown by StopAndArithmetic.java

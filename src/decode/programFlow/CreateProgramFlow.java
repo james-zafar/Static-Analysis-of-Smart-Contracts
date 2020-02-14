@@ -20,22 +20,27 @@ public class CreateProgramFlow {
         this.finished = finished;
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<>();
+        //Element 0 identifies the type of branch
+        currentBranch.add(0, "ROOT");
         programFlow = new HashMap<Integer, ArrayList<String>>();
         index = new ArrayList<>();
         for(current = 0; current < opcodes.size(); current++) {
             if(addToBranch) {
+                //"reset" the branch if it has already been added to tree
                 currentBranch = new ArrayList<>();
                 addToBranch = false;
             }
+            //Add to branch after checking opcode type
             manageOpcode(this.opcodes.get(current), currentBranch);
             if(current == opcodes.size()) {
                 addBranch(currentBranch);
             }
         }
-
+        //If there is still data in the branch, add it to the tree
         if(!currentBranch.isEmpty() && !addToBranch) {
             addBranch(currentBranch);
         }
+        //index is stored in pairs to identify any parts not yet analysed
         if(!index.isEmpty()) {
             missedOpcodes();
         }
@@ -55,34 +60,40 @@ public class CreateProgramFlow {
         List<String> tempArr;
         ArrayList<String> currentBranch =  new ArrayList<String>();
         try {
+            //Reserved branch is added to ensure missed codes are inserted in the correct place
             branchNumber = findReservedBranch();
+            //Remove empty reserved branch to add the current to
             programFlow.remove(branchNumber);
             currentBranch.add("Not executed");
         }catch(ProgramFlowException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unreachable statement - no reserved branch exists");
         }
-        while(index.size() > 0) {
-            temp = index.get(0);
-            tempArr = Arrays.asList(temp.split("\\s+"));
-            start = Integer.parseInt(tempArr.get(0));
-            finish = Integer.parseInt(tempArr.get(1));
-            for(current = start; current < finish; current++) {
-                if(addToBranch) {
-                    currentBranch = new ArrayList<String>();
-                    addToBranch = false;
-                }
+        temp = index.get(0);
+        //String contains two ints separated by space marking start and finish points
+        tempArr = Arrays.asList(temp.split("\\s+"));
+        start = Integer.parseInt(tempArr.get(0));
+        finish = Integer.parseInt(tempArr.get(1));
+        for(current = start; current < finish; current++) {
+            if(addToBranch) {
+                //Create new branch if current has already been added
+                currentBranch = new ArrayList<String>();
+                addToBranch = false;
             }
-            index.remove(0);
-            if(!currentBranch.isEmpty()) {
-                addBranch(currentBranch);
-            }
-            if(!index.isEmpty()) {
-                missedOpcodes();
-            }
+        }
+        index.remove(0);
+        if(!currentBranch.isEmpty()) {
+            addBranch(currentBranch);
+        }
+        if(!index.isEmpty()) {
+            //recursively call if there are more instances of indexes to be analysed
+            missedOpcodes();
         }
     }
 
     private int findReservedBranch() throws ProgramFlowException {
+        /*
+        Search for and return the first instance of a reserved branch
+         */
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
             ArrayList<String> values = entry.getValue();
             if((values.size() == 1) && (values.get(0).matches("Reserved"))) {
@@ -109,23 +120,26 @@ public class CreateProgramFlow {
                     branch.add(finished.get(current));
             }
         }catch(ProgramFlowException e) {
+            //Exception thrown if invalid jumps are attempted
             e.printStackTrace();
         }
     }
 
     private synchronized void addBranch(ArrayList<String> currentBranch) {
+        //Synchronized method for adding branches to ensure branches are added in the correct order
         if(programFlow.containsKey(branchNumber)) {
             branchNumber++;
         }
         programFlow.put(branchNumber, currentBranch);
         branchNumber++;
         addToBranch = true;
-        currentBranch = new ArrayList<String>();
     }
 
     private void addJump(ArrayList<String> currentBranch) throws ProgramFlowException {
         String temp = finished.get(current);
+        //Split current into [instructionNo, opcodeNo, opcodeType, addedToStack, removedFromStack]
         List<String> split = new LinkedList<>(Arrays.asList(temp.split("\\s+")));
+        //Index 4 will always contain an int denoting the "jump to" location
         String jumpToLocation = split.get(4).replaceAll("\\D+", "");
         try {
             if (opcodes.get(Integer.parseInt(jumpToLocation)).matches("JUMPDEST")) {
@@ -146,6 +160,7 @@ public class CreateProgramFlow {
                 addFailedJump(split, "The jump location does not exist", currentBranch);
                 throw new ProgramFlowException("The jump location does not exist", e);
         }finally {
+            //If an exception is thrown, deal with it in manageOpcode() and keep executing
             current++;
             manageOpcode(this.opcodes.get(current), currentBranch);
         }
@@ -160,6 +175,7 @@ public class CreateProgramFlow {
     }
 
     private void doJumpI(ArrayList<String> currentBranch) throws ProgramFlowException {
+        //JumpI is essentially "Jump If", if the test is passed then addJump as normal
         String info = finished.get(current);
         if(info.contains("VALID")) {
             addJump(currentBranch);
@@ -171,6 +187,7 @@ public class CreateProgramFlow {
     }
 
     private void addKill(ArrayList<String> currentBranch) {
+        //Kill is any stopping/reverting function which alters the flow of execution
         currentBranch.add(finished.get(current));
         addBranch(currentBranch);
     }
