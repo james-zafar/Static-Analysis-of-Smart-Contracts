@@ -30,7 +30,7 @@ public class Decoder {
     public Stack stack, memory;
     private StopAndArithmetic completeArithmeticOps;
 
-    public Decoder() {
+    public Decoder(String output) {
         decoded = new LinkedHashMap<List<String>, List<String>>();
         List<String> finished = new ArrayList<String>();
         stack = new Stack();
@@ -44,14 +44,22 @@ public class Decoder {
             bytecode = bytecode.substring(2);
         }
         runDecoder();
-        /*Use to print out Has Map */
-        //System.out.println(Arrays.deepToString(decoded.entrySet().toArray()));
+
         FormatBytecode formatter = new FormatBytecode(decoded);
         finished = formatter.getFormattedData();
-        //Output the finished reverse engineered data
-        //finished.forEach(current -> System.out.printSystem.out.print(current + "\n"));
-        //opcodesFound.forEach(x -> System.out.print(x + ", "));
-        new CreateProgramFlow(opcodesFound, finished);
+
+        /*Use to print out Has Map */
+        //System.out.println(Arrays.deepToString(decoded.entrySet().toArray()));
+        chooseOutput(output, finished);
+    }
+
+    private void chooseOutput(String output, List<String> data) {
+        if(output.matches("list") || output.matches("default")) {
+            //Output a list of opcodes found
+            data.forEach(current -> System.out.print(current + "\n"));
+        }else {
+            new CreateProgramFlow(opcodesFound, data, output);
+        }
     }
 
     private void runDecoder() {

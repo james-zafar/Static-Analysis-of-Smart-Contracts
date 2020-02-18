@@ -17,7 +17,7 @@ public class CreateProgramFlow {
     private List<String> duplicateBranches;
     int current, branchNumber = 1;
     private boolean addToBranch = false;
-    public CreateProgramFlow(List<String> opcodes, List<String> finished) {
+    public CreateProgramFlow(List<String> opcodes, List<String> finished, String output) {
         this.finished = finished;
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<>();
@@ -47,15 +47,21 @@ public class CreateProgramFlow {
             missedOpcodes();
         }
 
-        simplifyFlow();
+        outputData(output);
+        //finished.forEach(current -> System.out.print(current + "\n"));
+        //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
 
+    }
+
+    private void outputData(String outputType) {
+        if(outputType.matches("simpleBranch")) {
+            simplifyFlow();
+        }
+        assert programFlow != null;
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
             String listString = String.join(", ", entry.getValue());
             System.out.println("Key = " + entry.getKey() + ", Value = " + listString);
         }
-        //finished.forEach(current -> System.out.print(current + "\n"));
-        //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
-
     }
 
     private void missedOpcodes() {
