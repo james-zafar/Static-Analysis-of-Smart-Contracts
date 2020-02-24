@@ -1,6 +1,7 @@
 package src.decode.programFlow;
 
 import src.exceptions.ProgramFlowException;
+import src.json.CreateJson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class CreateProgramFlow {
         }
 
         outputData(output);
+        new CreateJson(programFlow);
         //finished.forEach(current -> System.out.print(current + "\n"));
         //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
 
@@ -60,7 +62,7 @@ public class CreateProgramFlow {
         assert programFlow != null;
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
             String listString = String.join(", ", entry.getValue());
-            System.out.println("Key = " + entry.getKey() + ", Value = " + listString);
+            System.out.println("Branch = " + entry.getKey() + ", Opcodes = " + listString);
         }
     }
 

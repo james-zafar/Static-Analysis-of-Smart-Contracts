@@ -1,4 +1,4 @@
-import src.decode.Decoder;
+import src.decode.decodeBytes.Decoder;
 
 public class Run {
     /*
@@ -8,12 +8,12 @@ public class Run {
         if(args.length == 0) {
             new Decoder("default");
         }else {
-            new Decoder(getOutputTypes(args));
+            new Decoder(getOutputType(String.join(",", args)));
         }
     }
 
-    private static String getOutputTypes(String[] args) {
-        switch(args[0].toLowerCase().replaceAll("\\s", "")) {
+    private static String getOutputType(String args) {
+        switch(args.toLowerCase().replaceAll("[^a-zA-Z\\\\s]", "")) {
             case "opcodes":
                 return "list";
             case "branch":

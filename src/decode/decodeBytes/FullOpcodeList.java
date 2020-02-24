@@ -1,4 +1,4 @@
-package src.decode;
+package src.decode.decodeBytes;
 
 import src.opcodes.*;
 

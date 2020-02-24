@@ -1,4 +1,4 @@
-package src.decode;
+package src.decode.decodeBytes;
 
 import src.decode.formatBytecode.FormatBytecode;
 import src.decode.programFlow.CreateProgramFlow;
