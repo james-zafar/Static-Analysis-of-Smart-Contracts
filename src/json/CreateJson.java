@@ -26,24 +26,7 @@ public class CreateJson {
 
     public void writeFile(JSONArray finished) {
         try (FileWriter file = new FileWriter("webDisplay.json")) {
-            file.write("cytoscape({\n");
-            file.write("  container: document.getElementById('cy'),\n");
-            file.write("  elements {");
             file.write(finished.toJSONString());
-            file.write("}, \nlayout: {\n" +
-                    "    name: 'grid',\n" +
-                    "    rows: 1\n" +
-                    "  },\n" +
-                    "\n");
-            file.write("style: [\n" +
-                    "    {\n" +
-                    "      selector: 'node',\n" +
-                    "      style: {\n" +
-                    "        'label': 'data(id)'\n" +
-                    "      }\n" +
-                    "    }\n" +
-                    "  ]\n" +
-                    "});");
             file.flush();
 
         } catch (IOException e) {
