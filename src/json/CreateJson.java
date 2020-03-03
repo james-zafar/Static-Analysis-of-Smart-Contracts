@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * org.json.simple library imported from Google Code Archives
+ * See: https://code.google.com/archive/p/json-simple/downloads for details
+ */
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 

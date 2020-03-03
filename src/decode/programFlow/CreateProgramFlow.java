@@ -2,6 +2,7 @@ package src.decode.programFlow;
 
 import src.exceptions.ProgramFlowException;
 import src.json.CreateJson;
+import src.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 public class CreateProgramFlow {
     public HashMap<Integer, ArrayList<String>> programFlow;
+    public List<Pair<Integer, Integer>> branchLinks;
     private List<String> finished;
     private List<String> opcodes;
     private List<String> index;
@@ -22,6 +24,7 @@ public class CreateProgramFlow {
         this.finished = finished;
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<>();
+        branchLinks = new ArrayList<>();
         duplicateBranches = new ArrayList<>();
         //Element 0 identifies the type of branch
         currentBranch.add(0, "ROOT");
@@ -70,7 +73,7 @@ public class CreateProgramFlow {
         int start, finish;
         String temp;
         List<String> tempArr;
-        ArrayList<String> currentBranch =  new ArrayList<String>();
+        ArrayList<String> currentBranch =  new ArrayList<>();
         try {
             //Reserved branch is added to ensure missed codes are inserted in the correct place
             branchNumber = findReservedBranch();
@@ -139,6 +142,7 @@ public class CreateProgramFlow {
 
     private synchronized void addBranch(ArrayList<String> currentBranch) {
         //Synchronized method for adding branches to ensure branches are added in the correct order
+        branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
         if(programFlow.containsKey(branchNumber)) {
             branchNumber++;
         }
@@ -162,7 +166,7 @@ public class CreateProgramFlow {
                 split.set(3, "None");
                 split.remove(4);
                 currentBranch.add(split.toString());
-                ArrayList<String> tempBranch = new ArrayList<String>();
+                ArrayList<String> tempBranch = new ArrayList<>();
                 tempBranch.add("Reserved");
                 addBranch(tempBranch);
             }else {
@@ -225,7 +229,7 @@ public class CreateProgramFlow {
 
     private void removeDuplicateBranches() {
         //After collapsing all branches iterate over the new map and delete any excess branches
-        String current = "";
+        String current;
         while(!duplicateBranches.isEmpty()) {
             current = duplicateBranches.get(0);
             List<String> startFinish = Arrays.asList(current.split("\\s+"));
@@ -241,7 +245,7 @@ public class CreateProgramFlow {
     private void collapseBranches(int key, ArrayList<String> values, HashMap<Integer, ArrayList<String>> tempFlow) {
         StringBuilder sb = new StringBuilder();
         //Marks the start and finish point of branches that can be removed
-        int branchStart = 0, branchFinish = 0;
+        int branchStart, branchFinish = 0;
         boolean matchFound = false;
         branchStart = (key + 1);
         for(int i = (key + 1); i < (programFlow.size() - 1); i++) {
