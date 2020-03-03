@@ -1,37 +1,66 @@
 package src.json;
 
+import src.utils.Pair;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
- * org.json.simple library imported from Google Code Archives
- * See: https://code.google.com/archive/p/json-simple/downloads for details
+ * org.json(Version 20190722) library imported:
+ * https://jar-download.com/artifacts/org.json
+ * See https://github.com/stleary/JSON-java for source
  */
 
-import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class CreateJson {
 
-    public CreateJson(HashMap<Integer, ArrayList<String>> flow) {
+    @SuppressWarnings("unchecked")
+    public CreateJson(HashMap<Integer, ArrayList<String>> flow, List<Pair<Integer, Integer>> branchLinks) {
         JSONArray nodes = new JSONArray();
-        JSONArray edges = new JSONArray();
-        JSONArray nodeList = new JSONArray();
-        JSONObject currentNode;
+        JSONObject currentNode, tempNode;
         for (Map.Entry<Integer, ArrayList<String>> entry : flow.entrySet()) {
             currentNode = new JSONObject();
-            currentNode.put("id:", entry.getKey());
-            nodes.add(currentNode);
+            tempNode = new JSONObject();
+            currentNode.put("id", entry.getKey());
+            tempNode.put("data", currentNode);
+            nodes.add(tempNode);
         }
-        writeFile(nodes);
+        JSONArray edges = addEdges(branchLinks);
+        writeFile(nodes, edges);
     }
 
-    public void writeFile(JSONArray finished) {
+    @SuppressWarnings("unchecked")
+    private JSONArray addEdges(List<Pair<Integer, Integer>> branchLinks) {
+        int origin, dest;
+        JSONArray edges = new JSONArray();
+        JSONObject edgeType, actualEdge;
+        String branchID;
+        for(Pair<Integer, Integer> current : branchLinks) {
+            edgeType = new JSONObject();
+            actualEdge = new JSONObject();
+            origin = current.getFirstPair();
+            dest = current.getSecondPair();
+            branchID = "edge" + String.valueOf(origin) + dest;
+            actualEdge.put("data", edgeType);
+            edgeType.put("target", dest);
+            edgeType.put("source", origin);
+            edgeType.put("id", branchID);
+            edges.add(actualEdge);
+        }
+        return edges;
+    }
+
+    public void writeFile(JSONArray nodes, JSONArray edges) {
         try (FileWriter file = new FileWriter("webDisplay.json")) {
-            file.write(finished.toJSONString());
+            file.write(nodes.toString());
+            file.write(System.lineSeparator());
+            file.write(edges.toString());
             file.flush();
 
         } catch (IOException e) {

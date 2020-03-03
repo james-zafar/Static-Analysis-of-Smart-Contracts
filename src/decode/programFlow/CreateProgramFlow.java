@@ -52,7 +52,7 @@ public class CreateProgramFlow {
         }
 
         outputData(output);
-        new CreateJson(programFlow);
+        new CreateJson(programFlow, branchLinks);
         //finished.forEach(current -> System.out.print(current + "\n"));
         //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
 
@@ -142,7 +142,9 @@ public class CreateProgramFlow {
 
     private synchronized void addBranch(ArrayList<String> currentBranch) {
         //Synchronized method for adding branches to ensure branches are added in the correct order
-        branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
+        if(!currentBranch.contains("STOP") || currentBranch.contains("SELFDESTRUCT")) {
+            branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
+        }
         if(programFlow.containsKey(branchNumber)) {
             branchNumber++;
         }
@@ -205,6 +207,7 @@ public class CreateProgramFlow {
     private void addKill(ArrayList<String> currentBranch) {
         //Kill is any stopping/reverting function which alters the flow of execution
         currentBranch.add(finished.get(current));
+        branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
         addBranch(currentBranch);
     }
 
