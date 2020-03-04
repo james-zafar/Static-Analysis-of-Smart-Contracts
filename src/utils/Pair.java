@@ -1,5 +1,6 @@
 package src.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,34 +27,44 @@ public class Pair<F, S> {
         this.second = p2;
     }
 
-    public int getFirstPair() {
-        return Integer.parseInt(String.valueOf(first));
+
+    public F getFirstPair() {
+        return first;
     }
 
-    public int getSecondPair() {
-        return Integer.parseInt(String.valueOf(second));
+    public S getSecondPair() {
+        return second;
     }
 
     /**
-     * findPair searches based on first element in an Integer pair only
      * @param toSearch A list of pairs
-     * @param firstElement the first element of the pair. Must be an Integer
-     * @return the pair containing the firstElement
-     * @throws IllegalArgumentException if the firstElement is not an integer
+     * @param searchFor the pair being searched for
+     * @return true if the list contains the pair being searched, false otherwise
      */
-    public Pair<F, S> findPair(List<Pair<F, S>> toSearch, F firstElement) throws IllegalArgumentException{
-        int searchFor;
-        if(firstElement instanceof Integer) {
-            searchFor = Integer.parseInt(String.valueOf(firstElement));
-        }else {
-            throw new IllegalArgumentException();
-        }
-        for(Pair<F, S> f : toSearch) {
-            if(f.getFirstPair() == searchFor) {
-                return f;
+    public boolean pairExists(List<Pair<F, S>> toSearch, Pair<F, S> searchFor) {
+        for(Pair<F, S> current : toSearch) {
+            if(current.getFirstPair() == searchFor.getFirstPair()
+                && current.getSecondPair() == searchFor.getSecondPair()) {
+                return true;
             }
         }
-        return null;
+        return false;
+    }
+
+    /**
+     *
+     * @param toSearch A list of pairs
+     * @param searchFor the first element of the pair being searched for
+     * @return the pair, if it exists, null otherwise
+     */
+    public List<Pair<F, S>> findPair(List<Pair<F, S>> toSearch, F searchFor) {
+        List<Pair<F, S>> allMatches = new ArrayList<>();
+        for(Pair<F, S> f : toSearch) {
+            if(f.getFirstPair() == searchFor) {
+                allMatches.add(f);
+            }
+        }
+        return allMatches;
     }
 
     @Override

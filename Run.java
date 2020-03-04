@@ -20,6 +20,10 @@ public class Run {
                 return "fullBranch";
             case "simplebranch":
                 return "simpleBranch";
+            case "ui":
+            case "gui":
+            case "webDisplay":
+                return "web";
             default:
                 throw new RuntimeException("Output type not recognised");
         }

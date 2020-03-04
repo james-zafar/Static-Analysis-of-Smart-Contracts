@@ -2,6 +2,7 @@ package src.decode.programFlow;
 
 import src.exceptions.ProgramFlowException;
 import src.json.CreateJson;
+import src.ui.java.LaunchWebGUI;
 import src.utils.Pair;
 
 import java.util.ArrayList;
@@ -50,9 +51,12 @@ public class CreateProgramFlow {
         if(!index.isEmpty()) {
             missedOpcodes();
         }
-
         outputData(output);
+        simplifyFlow();
         new CreateJson(programFlow, branchLinks);
+        if(output.matches("web")) {
+            new LaunchWebGUI();
+        }
         //finished.forEach(current -> System.out.print(current + "\n"));
         //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
 
@@ -141,10 +145,12 @@ public class CreateProgramFlow {
     }
 
     private synchronized void addBranch(ArrayList<String> currentBranch) {
-        //Synchronized method for adding branches to ensure branches are added in the correct order
-        if(!currentBranch.contains("STOP") || currentBranch.contains("SELFDESTRUCT")) {
-            branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
+        if(branchLinkPossible(programFlow.get((branchNumber - 1)))) {
+            if(!(branchLinkExists((branchNumber - 1), branchNumber))) {
+                branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
+            }
         }
+        //Synchronized method for adding branches to ensure branches are added in the correct order
         if(programFlow.containsKey(branchNumber)) {
             branchNumber++;
         }
@@ -185,6 +191,7 @@ public class CreateProgramFlow {
     }
 
     private void addFailedJump(List<String> split, String reason, ArrayList<String> currentBranch) {
+        branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
         String setReason = "Failed jump: " + reason;
         split.set(3, setReason);
         split.remove(4);
@@ -290,5 +297,24 @@ public class CreateProgramFlow {
             }
         }
         return false;
+    }
+
+    private boolean branchLinkPossible(List<String> branchFrom) {
+        //If origin branch is empty, return false
+        if(branchFrom == null) return false;
+        for(String current : branchFrom) {
+            //If branch contains stopping operations, return false
+            if(current.contains("STOP") || current.contains("KILL")
+                || current.contains("HALT") || current.contains("SELFDESTRUCT")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean branchLinkExists(int branchFrom, int branchTo) {
+        //Create a new instance of pair with the pair being searched for
+        Pair<Integer, Integer> newPair = new Pair<>(branchFrom, branchTo);
+        return(newPair.pairExists(branchLinks, newPair));
     }
 }
