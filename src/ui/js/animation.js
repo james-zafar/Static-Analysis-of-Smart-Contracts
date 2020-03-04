@@ -1,3 +1,5 @@
+var file = require('./webDisplay.json'); //(with path)
+var finished = JSON.parse(file);
 document.addEventListener('DOMContentLoaded', function () {
 
     var cy = window.cy = cytoscape({

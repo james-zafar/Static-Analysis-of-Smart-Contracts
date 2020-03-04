@@ -2,6 +2,7 @@ package src.json;
 
 import src.utils.Pair;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,12 +58,11 @@ public class CreateJson {
     }
 
     public void writeFile(JSONArray nodes, JSONArray edges) {
-        try (FileWriter file = new FileWriter("webDisplay.json")) {
+        try (BufferedWriter file = new BufferedWriter(new FileWriter("src/ui/js/webDisplay.json"))) {
             file.write(nodes.toString());
             file.write(System.lineSeparator());
             file.write(edges.toString());
             file.flush();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

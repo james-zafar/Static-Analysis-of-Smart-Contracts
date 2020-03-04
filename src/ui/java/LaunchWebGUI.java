@@ -7,8 +7,8 @@ import java.io.IOException;
 public class LaunchWebGUI {
 
     public LaunchWebGUI() throws IOException{
-        String url = "./../html/index.html";
-        File htmlFile = new File(url);
-        Desktop.getDesktop().browse(htmlFile.toURI());
+        String url = System.getProperty("user.dir") + "/src/ui/html/index.html";
+        File file = new File(url);
+        Desktop.getDesktop().browse(file.toURI());
     }
 }
