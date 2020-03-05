@@ -1,6 +1,9 @@
-var file = require('./webDisplay.json'); //(with path)
-var finished = JSON.parse(file);
 document.addEventListener('DOMContentLoaded', function () {
+    $(document).ready(function() {
+    $.getJSON("./../js/webDisplay.json", function (data) {
+        console.log("Here");
+    });
+});
 
     var cy = window.cy = cytoscape({
         container: document.getElementById('cy'),
@@ -24,17 +27,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         elements: {
             nodes: [
-                { data: { id: 'Branch1' } },
-                { data: { id: 'Branch2' } },
-                { data: { id: 'Branch3' } },
-                { data: { id: 'Branch4' } }
+                {data: {id: 'Branch1'}},
+                {data: {id: 'Branch2'}},
+                {data: {id: 'Branch3'}},
+                {data: {id: 'Branch4'}}
             ],
             edges: [
-                { data: { id: 'b12', source: 'Branch1', target: 'Branch2' } },
-                { data: { id: 'b13', source: 'Branch1', target: 'Branch3' } },
-                { data: { id: 'b23', source: 'Branch2', target: 'Branch3' } },
-                { data: { id: 'b24', source: 'Branch2', target: 'Branch4' } },
-                { data: { id: 'b14', source: 'Branch1', target: 'Branch4' } }
+                {data: {id: 'b12', source: 'Branch1', target: 'Branch2'}},
+                {data: {id: 'b13', source: 'Branch1', target: 'Branch3'}},
+                {data: {id: 'b23', source: 'Branch2', target: 'Branch3'}},
+                {data: {id: 'b24', source: 'Branch2', target: 'Branch4'}},
+                {data: {id: 'b14', source: 'Branch1', target: 'Branch4'}}
             ]
         },
 
@@ -49,23 +52,25 @@ document.addEventListener('DOMContentLoaded', function () {
     var c = cy.getElementById('Branch3');
     var d = cy.getElementById('Branch 4');
 
-    var makeDiv = function(text){
+    var makeDiv = function (text) {
         var div = document.createElement('div');
 
         div.classList.add('popper-div');
 
         div.innerHTML = text;
 
-        document.body.appendChild( div );
+        document.body.appendChild(div);
 
         return div;
     };
 
     var popperA = a.popper({
-        content: function(){ return makeDiv('Additional Info'); }
+        content: function () {
+            return makeDiv('Additional Info');
+        }
     });
 
-    var updateA = function(){
+    var updateA = function () {
         popperA.scheduleUpdate();
     };
 
@@ -73,13 +78,13 @@ document.addEventListener('DOMContentLoaded', function () {
     cy.on('pan zoom resize', updateA);
 
 
-
-
     var popperAB = ab.popper({
-        content: function(){ return makeDiv('Branch not executed'); }
+        content: function () {
+            return makeDiv('Branch not executed');
+        }
     });
 
-    var updateAB = function(){
+    var updateAB = function () {
         popperAB.scheduleUpdate();
     };
 
