@@ -11,4 +11,6 @@ By default a list of opcodes will be produced, for alternative outputs replace `
 
 'simple branch' to produce a simplified branch structure
 
+'gui' to launch the GUI and output a simplified branch structure
+
 Bytecode and caller address may be provided using the variables "bytecode" and "address" respectively in src/main/java/decode/decodeBytes/Decode.java.
