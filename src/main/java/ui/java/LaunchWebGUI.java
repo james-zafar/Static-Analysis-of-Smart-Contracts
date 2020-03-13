@@ -8,7 +8,7 @@ public class LaunchWebGUI {
 
     public LaunchWebGUI() {
         try {
-            String url = System.getProperty("user.dir") + "/src/ui/html/index.html";
+            String url = System.getProperty("user.dir") + "/src/main/java/ui/html/index.html";
             File file = new File(url);
             Desktop.getDesktop().browse(file.toURI());
         }catch(IOException e) {
