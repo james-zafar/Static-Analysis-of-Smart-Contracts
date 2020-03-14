@@ -1,7 +1,7 @@
 # Static Analysis of Smart Contracts Dissertaion Project
 To compile the project from the command line, navigate to the root directory and run:
 
-`java -jar target/Implementatxion-1.0-SNAPSHOT.jar <arg>`
+`java -jar target/Implementation-1.0-SNAPSHOT.jar <arg>`
 
 By default a list of opcodes will be produced, for alternative outputs replace `<arg>` with:
 
