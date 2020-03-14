@@ -3,6 +3,7 @@ package decode.programFlow;
 import exceptions.ProgramFlowException;
 import json.CreateJson;
 import ui.java.LaunchWebGUI;
+import upload.AWSUpload;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -53,8 +54,9 @@ public class CreateProgramFlow {
         }
         outputData(output);
         simplifyFlow();
-        new CreateJson(programFlow, branchLinks);
         if(output.matches("web")) {
+            new CreateJson(programFlow, branchLinks);
+            new AWSUpload();
             new LaunchWebGUI();
         }
         //finished.forEach(current -> System.out.print(current + "\n"));

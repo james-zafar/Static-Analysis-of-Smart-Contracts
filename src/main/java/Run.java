@@ -5,8 +5,6 @@ public class Run {
         Class that starts the system
      */
    public static void main(String [] args) {
-       //new upload.AWSUpload();
-
         if(args.length == 0) {
             new Decoder("default");
         }else {

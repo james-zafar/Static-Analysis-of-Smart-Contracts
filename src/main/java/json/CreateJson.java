@@ -55,7 +55,7 @@ public class CreateJson {
     }
 
     private void writeFile(JSONArray nodes, JSONArray edges) {
-        try (BufferedWriter file = new BufferedWriter(new FileWriter("src/main/java/ui/js/webDisplay.json"))) {
+        try (BufferedWriter file = new BufferedWriter(new FileWriter("src/main/java/upload/webDisplay.json"))) {
             file.write(nodes.toString());
             file.write(System.lineSeparator());
             file.write(edges.toString());
