@@ -20,7 +20,7 @@ import java.io.File;
 public class AWSUpload {
 
     public AWSUpload() {
-        AWSCredentials credentials = new BasicAWSCredentials(
+        final AWSCredentials credentials = new BasicAWSCredentials(
                 "AKIASK7K4P3QKM2X4YKU",
                 "cqhmZKie8i1ZFWA1Ckjr4KqvalicneuZGyG10qkP"
         );
@@ -32,10 +32,11 @@ public class AWSUpload {
         String filePath = System.getProperty("user.dir") + "/src/main/java/upload/webDisplay.JSON";
         try {
             s3.putObject(new PutObjectRequest(
-                    "dissertation-bucket", "json1.json", new File(filePath))
+                    "dissertation-bucket", "webDisplay.json", new File(filePath))
                     .withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (AmazonServiceException e) {
+            System.out.println("Error, could not generate GUI.");
             System.out.println(e.getMessage());
         }
     }

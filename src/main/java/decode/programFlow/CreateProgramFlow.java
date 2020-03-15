@@ -53,7 +53,6 @@ public class CreateProgramFlow {
             missedOpcodes();
         }
         outputData(output);
-        simplifyFlow();
         if(output.matches("web")) {
             new CreateJson(programFlow, branchLinks);
             new AWSUpload();
@@ -65,7 +64,7 @@ public class CreateProgramFlow {
     }
 
     private void outputData(String outputType) {
-        if(outputType.matches("simpleBranch")) {
+        if(outputType.matches("simpleBranch") || outputType.matches("web")) {
             simplifyFlow();
         }
         assert programFlow != null;
