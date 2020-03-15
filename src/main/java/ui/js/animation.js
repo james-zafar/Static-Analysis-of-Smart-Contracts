@@ -3,38 +3,41 @@ $(document).ready(function() {
 });
 
  function getAWSData() {
-     var def = new jQuery.Deferred();
-     AWS.config.region = 'eu-west-2'; // Region
-     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    //Create and config a new instance of AWS S3 Bucket
+    AWS.config.region = 'eu-west-2';
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
         IdentityPoolId: 'eu-west-2:91485a9b-7736-4a9a-96bc-e24adef8d550',
-     });
+    });
 
-     window.s3 = new AWS.S3();
+    window.s3 = new AWS.S3();
 
+    //Name of bucket and the file to be retrieved
     var params = {
         Bucket: "dissertation-bucket",
         Key: "webDisplay.json"
     };
+
+    //Callback function to ensure launchUI() only runs when S3 has returned the data
     getFile(params, function callUI() {
         launchUI();
     });
  }
 
- function getFile(params, callback) {
-     window.s3.getObject(params, function (error, data) {
-         if (error) {
-             console.log(error);
-             callback(error);
-         } else {
-             const fileContents = data.Body.toString();
-             window.split = fileContents.split("\n");
-             callback();
-         }
-     });
- }
+function getFile(params, callback) {
+    window.s3.getObject(params, function (error, data) {
+        if (error) {
+            console.log(error);
+        } else {
+            //data.body.toString() returns the raw data from getObject call
+            const fileContents = data.Body.toString();
+            window.split = fileContents.split("\n");
+            callback();
+        }
+    });
+}
 
 /**
- * Generate animated display using Cytoscape.js
+ * Generate animated graph using Cytoscape.js
  */
  function launchUI() {
     console.log(window.split[0]);
