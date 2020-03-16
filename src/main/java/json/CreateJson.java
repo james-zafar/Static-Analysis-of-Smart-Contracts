@@ -5,9 +5,6 @@ import utils.Pair;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +39,8 @@ public class CreateJson {
         for(Pair<Integer, Integer> current : branchLinks) {
             edgeType = new JSONObject();
             actualEdge = new JSONObject();
-            origin = current.getFirstPair();
-            dest = current.getSecondPair();
+            origin = current.getFirst();
+            dest = current.getSecond();
             branchID = "edge" + String.valueOf(origin) + dest;
             actualEdge.put("data", edgeType);
             edgeType.put("target", dest);

@@ -40,8 +40,15 @@ function getFile(params, callback) {
  * Generate animated graph using Cytoscape.js
  */
  function launchUI() {
-    console.log(window.split[0]);
-    console.log(window.split[1]);
+     var options = {
+        klay: {
+            addUnnecessaryBendpoints: true,
+            direction: 'VERTICAL',
+            fixedAlignment: 'BALANCED'
+        }
+     };
+     console.log(window.split[0]);
+     console.log(window.split[1]);
     var cy = window.cy = cytoscape({
         container: document.getElementById('cy'),
 
@@ -63,30 +70,14 @@ function getFile(params, callback) {
         ],
 
         elements: {
-            nodes: window.split[0],
-            edges: window.split[1]
-            /*
-            nodes: [
-                {data: {id: 'Branch1'}},
-                {data: {id: 'Branch2'}},
-                {data: {id: 'Branch3'}},
-                {data: {id: 'Branch4'}}
-            ],
-            edges: [
-                {data: {id: 'b12', source: 'Branch1', target: 'Branch2'}},
-                {data: {id: 'b13', source: 'Branch1', target: 'Branch3'}},
-                {data: {id: 'b23', source: 'Branch2', target: 'Branch3'}},
-                {data: {id: 'b24', source: 'Branch2', target: 'Branch4'}},
-                {data: {id: 'b14', source: 'Branch1', target: 'Branch4'}}
-            ]
-             */
+            nodes: JSON.parse(window.split[0]),
+            edges: JSON.parse(window.split[1])
         },
 
         layout: {
             name: 'breadthfirst'
         }
     });
-
     /*var a = cy.getElementById('Branch1');
     var b = cy.getElementById('Branch2');
     var ab = cy.getElementById('b23');

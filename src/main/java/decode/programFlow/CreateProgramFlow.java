@@ -19,7 +19,6 @@ public class CreateProgramFlow {
     private List<String> finished;
     private List<String> opcodes;
     private List<String> index;
-    private List<String> duplicateBranches;
     int current, branchNumber = 1;
     private boolean addToBranch = false;
     public CreateProgramFlow(List<String> opcodes, List<String> finished, String output) {
@@ -27,7 +26,6 @@ public class CreateProgramFlow {
         this.opcodes = opcodes;
         ArrayList<String> currentBranch = new ArrayList<>();
         branchLinks = new ArrayList<>();
-        duplicateBranches = new ArrayList<>();
         //Element 0 identifies the type of branch
         currentBranch.add(0, "ROOT");
         programFlow = new HashMap<Integer, ArrayList<String>>();
@@ -52,7 +50,9 @@ public class CreateProgramFlow {
         if(!index.isEmpty()) {
             missedOpcodes();
         }
-        outputData(output);
+        SimplifyFlow sp = new SimplifyFlow(programFlow, branchLinks);
+        outputData(output, sp);
+        branchLinks = sp.getSimplifiedLinks();
         if(output.matches("web")) {
             new CreateJson(programFlow, branchLinks);
             new AWSUpload();
@@ -63,9 +63,9 @@ public class CreateProgramFlow {
 
     }
 
-    private void outputData(String outputType) {
+    private void outputData(String outputType, SimplifyFlow sp) {
         if(outputType.matches("simpleBranch") || outputType.matches("web")) {
-            simplifyFlow();
+            programFlow = sp.getSimplifiedFlow();
         }
         assert programFlow != null;
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
@@ -96,7 +96,7 @@ public class CreateProgramFlow {
         for(current = start; current < finish; current++) {
             if(addToBranch) {
                 //Create new branch if current has already been added
-                currentBranch = new ArrayList<String>();
+                currentBranch = new ArrayList<>();
                 addToBranch = false;
             }
         }
@@ -217,87 +217,6 @@ public class CreateProgramFlow {
         currentBranch.add(finished.get(current));
         branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
         addBranch(currentBranch);
-    }
-
-
-    private void simplifyFlow() {
-        //Can not amend a map whilst iterating over it, so use tempFlow to store the new flow
-        HashMap<Integer, ArrayList<String>> tempFlow = new HashMap<Integer, ArrayList<String>>();
-        for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
-            ArrayList<String> values = entry.getValue();
-            //If we are at the end of map then break from the loop
-            if(entry.getKey() == (programFlow.size() - 1)) {
-                break;
-            }
-            //Else, if values has some content attempt to find identical branches to collapse
-            if(!values.isEmpty()) {
-                collapseBranches(entry.getKey(), values, tempFlow);
-            }
-        }
-        programFlow = tempFlow;
-        removeDuplicateBranches();
-    }
-
-    private void removeDuplicateBranches() {
-        //After collapsing all branches iterate over the new map and delete any excess branches
-        String current;
-        while(!duplicateBranches.isEmpty()) {
-            current = duplicateBranches.get(0);
-            List<String> startFinish = Arrays.asList(current.split("\\s+"));
-            int start = Integer.parseInt(startFinish.get(0));
-            int finish = Integer.parseInt(startFinish.get(1));
-            for (int i = start; i <= finish; i++) {
-                programFlow.remove(i);
-            }
-            duplicateBranches.remove(0);
-        }
-    }
-
-    private void collapseBranches(int key, ArrayList<String> values, HashMap<Integer, ArrayList<String>> tempFlow) {
-        StringBuilder sb = new StringBuilder();
-        //Marks the start and finish point of branches that can be removed
-        int branchStart, branchFinish = 0;
-        boolean matchFound = false;
-        branchStart = (key + 1);
-        for(int i = (key + 1); i < (programFlow.size() - 1); i++) {
-            if(branchMatch(i, values)) {
-                //Keep a list of duplicate branches that have been collapsed
-                sb.append(i).append(" ");
-                matchFound = true;
-            }else {
-                break;
-            }
-            branchFinish = i;
-        }
-        if(matchFound) {
-            //Only need to add this data if identical branches have been found
-            String branchesToRemove = Integer.toString(branchStart) + " " + Integer.toString(branchFinish);
-            sb.insert(0, "Branches <");
-            sb.deleteCharAt(sb.length() - 1);
-            sb.append(">");
-            values.add(0, sb.toString());
-            duplicateBranches.add(branchesToRemove);
-        }
-        tempFlow.put(key, values);
-    }
-
-    private boolean branchMatch(int key, ArrayList<String> values) {
-        //Remove the instruction number from branches to compare the opcodes only
-        List<String> temp = Arrays.asList(programFlow.get(key).get(0).split("\\s+"));
-        temp = temp.subList(1, temp.size());
-        List<String> toCompare = Arrays.asList(values.get(0).split("\\s+"));
-        toCompare = toCompare.subList(1, toCompare.size());
-        //If they are the same return true
-        if(temp.equals(toCompare)) {
-            return true;
-        }
-        //If not then compare then compare the sizes and check if all opcodes are present in both branches
-        if(programFlow.get(key).size() == (values.subList(1, values.size()).size())) {
-            if(programFlow.get(key).size() == 1 && (values.subList(1, values.size()).size() == 1)) {
-                return temp.containsAll(toCompare);
-            }
-        }
-        return false;
     }
 
     private boolean branchLinkPossible(List<String> branchFrom) {

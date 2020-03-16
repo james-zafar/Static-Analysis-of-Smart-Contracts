@@ -28,11 +28,11 @@ public class Pair<F, S> {
     }
 
 
-    public F getFirstPair() {
+    public F getFirst() {
         return first;
     }
 
-    public S getSecondPair() {
+    public S getSecond() {
         return second;
     }
 
@@ -43,8 +43,8 @@ public class Pair<F, S> {
      */
     public boolean pairExists(List<Pair<F, S>> toSearch, Pair<F, S> searchFor) {
         for(Pair<F, S> current : toSearch) {
-            if(current.getFirstPair() == searchFor.getFirstPair()
-                && current.getSecondPair() == searchFor.getSecondPair()) {
+            if(current.getFirst() == searchFor.getFirst()
+                && current.getSecond() == searchFor.getSecond()) {
                 return true;
             }
         }
@@ -60,7 +60,7 @@ public class Pair<F, S> {
     public List<Pair<F, S>> findPair(List<Pair<F, S>> toSearch, F searchFor) {
         List<Pair<F, S>> allMatches = new ArrayList<>();
         for(Pair<F, S> f : toSearch) {
-            if(f.getFirstPair() == searchFor) {
+            if(f.getFirst() == searchFor) {
                 allMatches.add(f);
             }
         }
