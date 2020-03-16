@@ -162,8 +162,8 @@ public class SimplifyFlow {
     }
 
     private boolean branchExists(int source, int target) {
-        if(source == target) return false;
-        if(source <= 0 || target <= 0) return  false;
+        if(source == target) return true;
+        if(source <= 0 || target <= 0) return true;
         //Create a new instance of pair with the pair being searched for
         Pair<Integer, Integer> newPair = new Pair<>(source, target);
         return(newPair.pairExists(branchLinks, newPair));

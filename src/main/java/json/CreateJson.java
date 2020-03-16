@@ -16,18 +16,25 @@ import org.json.simple.JSONObject;
 public class CreateJson {
 
     @SuppressWarnings("unchecked")
-    public CreateJson(HashMap<Integer, ArrayList<String>> flow, List<Pair<Integer, Integer>> branchLinks) {
+    public CreateJson(HashMap<Integer, ArrayList<String>> flow,
+                      List<Pair<Integer, Integer>> branchLinks)
+    {
         JSONArray nodes = new JSONArray();
-        JSONObject currentNode, tempNode;
+        JSONObject currentNode, tempNode, dataNode;
+        List<JSONObject> allData = new ArrayList<>();
         for (Map.Entry<Integer, ArrayList<String>> entry : flow.entrySet()) {
             currentNode = new JSONObject();
             tempNode = new JSONObject();
+            dataNode = new JSONObject();
             currentNode.put("id", entry.getKey());
             tempNode.put("data", currentNode);
             nodes.add(tempNode);
+            String data = entry.getValue().stream().reduce("", String::concat);
+            dataNode.put(entry.getKey(), data);
+            allData.add(dataNode);
         }
         JSONArray edges = addEdges(branchLinks);
-        writeFile(nodes, edges);
+        writeFile(nodes, edges, allData);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,11 +58,15 @@ public class CreateJson {
         return edges;
     }
 
-    private void writeFile(JSONArray nodes, JSONArray edges) {
+    private void writeFile(JSONArray nodes, JSONArray edges, List<JSONObject> info) {
         try (BufferedWriter file = new BufferedWriter(new FileWriter("src/main/java/upload/webDisplay.json"))) {
             file.write(nodes.toString());
             file.write(System.lineSeparator());
             file.write(edges.toString());
+            for(JSONObject current : info) {
+                file.write(System.lineSeparator());
+                file.write(current.toJSONString());
+            }
             file.flush();
         } catch (IOException e) {
             e.printStackTrace();
