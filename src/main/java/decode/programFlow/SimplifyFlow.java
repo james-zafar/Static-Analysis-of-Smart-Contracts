@@ -2,7 +2,12 @@ package decode.programFlow;
 
 import utils.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SimplifyFlow {
@@ -34,7 +39,7 @@ public class SimplifyFlow {
 
     private void simplify() {
         //Can not amend a map whilst iterating over it, so use tempFlow to store the new flow
-        HashMap<Integer, ArrayList<String>> tempFlow = new HashMap<Integer, ArrayList<String>>();
+        HashMap<Integer, ArrayList<String>> tempFlow = new HashMap<>();
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
             ArrayList<String> values = entry.getValue();
             //If we are at the end of map then break from the loop

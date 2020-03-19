@@ -78,48 +78,27 @@ function getFile(params, callback) {
             name: 'breadthfirst'
         }
     });
-    /*var a = cy.getElementById('Branch1');
-    var b = cy.getElementById('Branch2');
-    var ab = cy.getElementById('b23');
-    var c = cy.getElementById('Branch3');
-    var d = cy.getElementById('Branch 4');
 
-    var makeDiv = function (text) {
-        var div = document.createElement('div');
-
-        div.classList.add('popper-div');
-
-        div.innerHTML = text;
-
-        document.body.appendChild(div);
-
-        return div;
-    };
-
-    var popperA = a.popper({
-        content: function () {
-            return makeDiv('Additional Info');
-        }
+    //When the user taps a given node, update the information displayed
+    cy.on('tap', 'node', function(evt){
+        var node = evt.target;
+        updateDisplay(evt);
     });
 
-    var updateA = function () {
-        popperA.scheduleUpdate();
-    };
-
-    a.on('position', updateA);
-    cy.on('pan zoom resize', updateA);
-
-
-    var popperAB = ab.popper({
-        content: function () {
-            return makeDiv('Branch not executed');
+    function updateDisplay(evt) {
+        var source = (evt.target).id();
+        //elements 0 and 1 are node/edge arrays and can be ignored
+        for(i = 2; i < window.split.length; i++) {
+            //Returns the id which represents the node the data is attached to
+            var id = (Object.keys(JSON.parse(window.split[i])))[0];
+            if(id === source) {
+                formatData(JSON.parse(window.split[i]));
+                break;
+            }
         }
-    });
+    }
 
-    var updateAB = function () {
-        popperAB.scheduleUpdate();
-    };
-
-    ab.connectedNodes().on('position', updateAB);
-    cy.on('pan zoom resize', updateAB);*/
+    function formatData(data) {
+        console.log(data);
+    }
 }
