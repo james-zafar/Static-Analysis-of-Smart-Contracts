@@ -81,24 +81,25 @@ function getFile(params, callback) {
 
     //When the user taps a given node, update the information displayed
     cy.on('tap', 'node', function(evt){
-        var node = evt.target;
         updateDisplay(evt);
     });
+}
 
-    function updateDisplay(evt) {
-        var source = (evt.target).id();
-        //elements 0 and 1 are node/edge arrays and can be ignored
-        for(i = 2; i < window.split.length; i++) {
-            //Returns the id which represents the node the data is attached to
-            var id = (Object.keys(JSON.parse(window.split[i])))[0];
-            if(id === source) {
-                formatData(JSON.parse(window.split[i]));
-                break;
-            }
+function updateDisplay(evt) {
+    const source = (evt.target).id();
+    //elements 0 and 1 are node/edge arrays and can be ignored
+    for(let i = 2; i < window.split.length; i++) {
+        //Returns the id which represents the node the data is attached to
+        var id = (Object.keys(JSON.parse(window.split[i])))[0].replace(/\D/g,'');
+        if(id === source) {
+            formatData(JSON.parse(window.split[i]), id);
+            break;
         }
     }
+}
 
-    function formatData(data) {
-        console.log(data);
-    }
+function formatData(data, id) {
+    const temp = "Branch" + id;
+    var dataLines = data[temp].split(", ");
+    console.log(dataLines);
 }

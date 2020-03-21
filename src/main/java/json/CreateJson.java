@@ -29,8 +29,8 @@ public class CreateJson {
             currentNode.put("id", entry.getKey());
             tempNode.put("data", currentNode);
             nodes.add(tempNode);
-            String data = entry.getValue().stream().reduce("", String::concat);
-            dataNode.put(entry.getKey(), data);
+            //String data = entry.getValue().stream().reduce("\\s", String::concat);
+            dataNode.put(("Branch" + entry.getKey()), entry.getValue().toString());
             allData.add(dataNode);
         }
         JSONArray edges = addEdges(branchLinks);
