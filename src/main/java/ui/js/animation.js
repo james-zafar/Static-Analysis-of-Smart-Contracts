@@ -100,6 +100,35 @@ function updateDisplay(evt) {
 
 function formatData(data, id) {
     const temp = "Branch" + id;
+    //Gets each element of original JSON data
     var dataLines = data[temp].split(", ");
     console.log(dataLines);
+    dataLines = Object.values(dataLines);
+        if(JSON.stringify(dataLines[0]).includes("Branches")) {
+        addBranchTitle(id, dataLines[0]);
+        //Remove first array element as no longer needed
+        dataLines = dataLines.shift();
+        console.log(dataLines);
+    }else {
+        addBranchTitle(id);
+    }
+    //Updates the area showing the branch detail
+    updateContentArea(dataLines);
+}
+
+function addBranchTitle(id, branches) {
+     //Branches optional parameter, only present if node represents many branches
+     if(branches === undefined) {
+         $("#branchArea").text("Branch: " + id);
+     }else {
+         //Remove identifier text before displaying
+         var newTitle = branches.replace('[Branches <', '');
+         newTitle = newTitle.replace('>', '');
+         var display = id + " " + newTitle;
+         $("#branchArea").text("Branches: " + display);
+     }
+}
+
+function updateContentArea(dataLines) {
+
 }
