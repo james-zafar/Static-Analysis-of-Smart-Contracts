@@ -92,28 +92,27 @@ function updateDisplay(evt) {
         //Returns the id which represents the node the data is attached to
         var id = (Object.keys(JSON.parse(window.split[i])))[0].replace(/\D/g,'');
         if(id === source) {
-            formatData(JSON.parse(window.split[i]), id);
+            formatData(JSON.parse(window.split[i]), id, function callUpdate() {
+                updateContentArea();
+            });
             break;
         }
     }
 }
 
-function formatData(data, id) {
+function formatData(data, id, callback) {
     const temp = "Branch" + id;
     //Gets each element of original JSON data
-    var dataLines = data[temp].split(", ");
-    console.log(dataLines);
-    dataLines = Object.values(dataLines);
-        if(JSON.stringify(dataLines[0]).includes("Branches")) {
-        addBranchTitle(id, dataLines[0]);
+    window.window.dataLines = data[temp].split(", ");
+    if(JSON.stringify(window.dataLines[0]).includes("Branches")) {
+        addBranchTitle(id, window.dataLines[0]);
         //Remove first array element as no longer needed
-        dataLines = dataLines.shift();
-        console.log(dataLines);
+        window.dataLines.splice(0, 1);
     }else {
         addBranchTitle(id);
     }
     //Updates the area showing the branch detail
-    updateContentArea(dataLines);
+    callback();
 }
 
 function addBranchTitle(id, branches) {
@@ -124,11 +123,49 @@ function addBranchTitle(id, branches) {
          //Remove identifier text before displaying
          var newTitle = branches.replace('[Branches <', '');
          newTitle = newTitle.replace('>', '');
-         var display = id + " " + newTitle;
+         newTitle = newTitle.split(' ').join(', ');
+         var display = id + ", " + newTitle;
          $("#branchArea").text("Branches: " + display);
      }
 }
 
-function updateContentArea(dataLines) {
+function updateContentArea() {
+    const height = 1 / window.dataLines.length;
+    const actualHeight = height + "%";
+    $("#contentHolder div").remove();
+    $("#contentArea").append("<div id='contentHolder' />");
+    $("#contentArea div").empty().removeAttr("style");
+    for(let i = 0; i < window.split.length; i++) {
+        $( "<div />", {
+            "class": "content-area",
+            "id": "element" + i,
+            text: window.dataLines[i],
+            on: {
+                mouseover: function() {
+                    changeStyle(this.id);
+                },
+                mouseleave: function() {
+                    revertStyles(this.id);
+                }
+            },
+            css: {
+                paddingBottom: "10px",
+                width: "100%",
+                paddingTop: "10px",
+            }
+        })
+            .appendTo( "#contentArea" );
+    }
+}
 
+function changeStyle(source) {
+    $("#" + source).css({
+        "background": "rgb(99, 99, 99)"
+    });
+}
+
+function revertStyles(source) {
+     $("#" + source).css({
+        "background": "rgb(155, 155, 155)"
+    });
 }
