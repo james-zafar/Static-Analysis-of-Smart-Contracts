@@ -1,45 +1,65 @@
 <html>
 
-<head>
-    <title>Smart Contract GUI</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <head>
+        <title>Smart Contract GUI</title>
+        <link rel="stylesheet" href="../css/style.css">
+        <!--
+            jquery-qtip.min.css imported from:
+                https://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css
+            qtip is dual-licensed under the open source MITand GPLv2 license
+        -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css">
+        <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <!-- Cytoscape.min.js sourced from https://github.com/cytoscape/cytoscape.js/blob/unstable/dist/cytoscape.min.js -->
-    <!-- See ../js/cytoscape.min.js for copyright details -->
-    <script src="../js/cytoscape.min.js"></script>
+        <!--
+            JQuery library imported from
+            https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js
+        -->
 
-    <!--Code sourced from https://unpkg.com/popper.js@1.16.0/dist/umd/popper.js -->
-    <script src="https://unpkg.com/popper.js@1.16.0/dist/umd/popper.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <!--
-        cytoscape-popper.js imported from
-        https://github.com/cytoscape/cytoscape.js-popper/blob/master/src/popper.js
-    -->
-    <script src="../js/cytoscape-popper.js"></script>
+        <!--
+            jquery-qtip.min.css imported from:
+                https://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js
+            qtip is dual-licensed under the open source MITand GPLv2 license
+        -->
 
-    <!--
-        aws-sdk (v 2.1.12) imported from
-        https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js
-    -->
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
 
-    <script src="../js/animation.js"></script>
-</head>
+        <!-- Cytoscape.min.js sourced from https://github.com/cytoscape/cytoscape.js/blob/unstable/dist/cytoscape.min.js -->
+        <!-- See ../js/cytoscape.min.js for copyright details -->
+        <script src="../js/cytoscape.min.js"></script>
 
-<body>
-    <h1>Smart Contract GUI</h1>
-    <div id="cy"></div>
-    <div id="container">
-        <div id="titleArea">
-            <p id="branchArea"></p>
+        <!--Code sourced from https://unpkg.com/popper.js@1.16.0/dist/umd/popper.js -->
+        <script src="https://unpkg.com/popper.js@1.16.0/dist/umd/popper.js"></script>
+
+        <!--
+            cytoscape-popper.js imported from
+            https://github.com/cytoscape/cytoscape.js-popper/blob/master/src/popper.js
+        -->
+        <script src="../js/cytoscape-popper.js"></script>
+
+        <!--
+            aws-sdk (v 2.1.12) imported from
+            https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js
+        -->
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+
+        <script src="../js/animation.js"></script>
+    </head>
+
+    <body>
+        <h1>Smart Contract GUI</h1>
+        <div id="cy"></div>
+        <div id="container">
+            <div id="titleArea">
+                <p id="branchArea"></p>
+            </div>
+            <div id="contentArea">
+                <div class="contentHolder"></div>
+            </div>
         </div>
-        <div id="contentArea">
-            <div class="contentHolder"></div>
-        </div>
-    </div>
-</body>
+    </body>
 
 </html>

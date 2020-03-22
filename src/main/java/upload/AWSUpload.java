@@ -14,6 +14,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import update.CreateDictionary;
 
 import java.io.File;
 
@@ -35,6 +36,15 @@ public class AWSUpload {
                     "dissertation-bucket", "webDisplay.json", new File(filePath))
                     .withCannedAcl(CannedAccessControlList.PublicRead)
             );
+
+            if(!(s3.doesObjectExist("dissertation-bucket", "Dictionary.json"))) {
+                new CreateDictionary();
+                String path = System.getProperty("user.dir") + "/src/main/java/update/Dictionary.json";
+                s3.putObject(new PutObjectRequest(
+                        "dissertation-bucket", "Dictionary.json", new File(path))
+                        .withCannedAcl(CannedAccessControlList.PublicRead)
+                );
+            }
         } catch (AmazonServiceException e) {
             System.out.println("Error, could not generate GUI.");
             System.out.println(e.getMessage());

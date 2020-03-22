@@ -1,4 +1,5 @@
 import decode.decodeBytes.Decoder;
+import update.Update;
 
 public class Run {
     /*
@@ -7,7 +8,10 @@ public class Run {
    public static void main(String [] args) {
         if(args.length == 0) {
             new Decoder("default");
-        }else {
+        }
+        else if(getOutputType(String.join(",", args)).matches("update")) {
+            new Update();
+        } else {
             new Decoder(getOutputType(String.join(",", args)));
         }
     }
@@ -17,13 +21,15 @@ public class Run {
             case "opcodes":
                 return "list";
             case "branch":
-                return "fullBranch";
+                return "fullbranch";
             case "simplebranch":
-                return "simpleBranch";
+                return "simplebranch";
             case "ui":
             case "gui":
-            case "webDisplay":
+            case "webdisplay":
                 return "web";
+            case "update":
+                return "update";
             default:
                 throw new RuntimeException("Output type not recognised");
         }

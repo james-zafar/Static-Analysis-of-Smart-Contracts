@@ -138,20 +138,19 @@ function updateContentArea() {
         if(window.dataLines[i] === '[ROOT') {
             i++;
         }
+        var classID = "element" + i;
+        var toolTextID = "tooltip" + i;
         $( "<div />", {
-            "class": "contentHolder",
-            "id": "element" + i,
+            "class": classID,
+            "id": classID,
             text: window.dataLines[i],
             on: {
                 mouseover: function() {
-                    changeStyle(this.id);
+                    changeStyle(this.id, i);
                 },
                 mouseleave: function() {
                     revertStyles(this.id);
                 },
-                click: function () {
-                    showHelp(this.id);
-                }
             },
             css: {
                 paddingBottom: "10px",
@@ -160,10 +159,30 @@ function updateContentArea() {
             }
         })
             .appendTo( "#contentArea" );
+        //Hidden div inside of element with tooltip info
+        $( "<div />", {
+            "class": toolTextID,
+            "id": toolTextID,
+            text: getHelpText(),
+            css: {
+                display: "none"
+            }
+        })
+            .appendTo( "#element" + i );
+
+        $("#" + classID).qtip({
+            content: {
+                text: $("#" + toolTextID)
+            },
+            show: {
+                event: 'mouseover'
+            }
+        })
+            .attr('title', 'my Title');
     }
 }
 
-function changeStyle(source) {
+function changeStyle(source, id) {
     //on hover change the background color
     $(  "#" + source).css({
         "background": "rgb(109, 109, 109)"
@@ -180,6 +199,6 @@ function revertStyles(source) {
 /*
 * Function used to display helpful info about opcode (not implemented in this release)
 * */
-function showHelp(source) {
-
+function getHelpText(source) {
+    return("this is some text to display");
 }
