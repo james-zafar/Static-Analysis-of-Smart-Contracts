@@ -130,14 +130,16 @@ function addBranchTitle(id, branches) {
 }
 
 function updateContentArea() {
-    const height = 1 / window.dataLines.length;
-    const actualHeight = height + "%";
-    $("#contentHolder div").remove();
-    $("#contentArea").append("<div id='contentHolder' />");
+    //Clear old display
+    $("div.contentHolder").remove();
     $("#contentArea div").empty().removeAttr("style");
     for(let i = 0; i < window.split.length; i++) {
+        //Root is an identifier with no data
+        if(window.dataLines[i] === '[ROOT') {
+            i++;
+        }
         $( "<div />", {
-            "class": "content-area",
+            "class": "contentHolder",
             "id": "element" + i,
             text: window.dataLines[i],
             on: {
@@ -146,6 +148,9 @@ function updateContentArea() {
                 },
                 mouseleave: function() {
                     revertStyles(this.id);
+                },
+                click: function () {
+                    showHelp(this.id);
                 }
             },
             css: {
@@ -159,13 +164,22 @@ function updateContentArea() {
 }
 
 function changeStyle(source) {
-    $("#" + source).css({
-        "background": "rgb(99, 99, 99)"
+    //on hover change the background color
+    $(  "#" + source).css({
+        "background": "rgb(109, 109, 109)"
     });
 }
 
 function revertStyles(source) {
+     //When not hovering, revert background to original
      $("#" + source).css({
         "background": "rgb(155, 155, 155)"
     });
+}
+
+/*
+* Function used to display helpful info about opcode (not implemented in this release)
+* */
+function showHelp(source) {
+
 }
