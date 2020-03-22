@@ -103,7 +103,7 @@ function updateDisplay(evt) {
 function formatData(data, id, callback) {
     const temp = "Branch" + id;
     //Gets each element of original JSON data
-    window.window.dataLines = data[temp].split(", ");
+    window.dataLines = data[temp].split(", ");
     if(JSON.stringify(window.dataLines[0]).includes("Branches")) {
         addBranchTitle(id, window.dataLines[0]);
         //Remove first array element as no longer needed
@@ -159,26 +159,30 @@ function updateContentArea() {
             }
         })
             .appendTo( "#contentArea" );
+
         //Hidden div inside of element with tooltip info
         $( "<div />", {
             "class": toolTextID,
             "id": toolTextID,
-            text: getHelpText(),
+            //Get text from dictionary
+            text: getHelpText(classID),
             css: {
                 display: "none"
             }
         })
             .appendTo( "#element" + i );
 
+        //Create a tooltip for each line of output
         $("#" + classID).qtip({
             content: {
+                //Get text content from hidden div
                 text: $("#" + toolTextID)
             },
             show: {
                 event: 'mouseover'
             }
         })
-            .attr('title', 'my Title');
+            .attr('title', 'Help');
     }
 }
 
@@ -196,9 +200,40 @@ function revertStyles(source) {
     });
 }
 
-/*
-* Function used to display helpful info about opcode (not implemented in this release)
-* */
 function getHelpText(source) {
-    return("this is some text to display");
+    //Bucket and object to use
+    var params = {
+        Bucket: "dissertation-bucket",
+        Key: "Dictionary.json"
+    };
+    //callback function to ensure dictionary is available before searching it
+    getDictionary(params, function callFindDef() {
+        return findDefinition(source);
+    });
+
+}
+
+function getDictionary(params, callback) {
+    window.s3.getObject(params, function (error, data) {
+        if (error) {
+            console.log(error);
+        } else {
+            //data.body.toString() returns the raw data from getObject call
+            const fileContents = data.Body.toString();
+            window.dictionary = fileContents.split(",");
+            callback();
+        }
+    });
+}
+
+function findDefinition(source) {
+    var text = $('#' + source).text();
+    //Return the object with the correct definition
+    var returnVal = window.dictionary[((text.split(' '))[1])];
+    //Undefined if no help available for given opcode
+    if(returnVal === undefined) {
+        return "No help available";
+    }else {
+        return returnVal;
+    }
 }
