@@ -8,15 +8,15 @@ import org.json.simple.JSONObject;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class CreateDictionary {
 
     public CreateDictionary() {
         List<Opcode> allCodes = new FullOpcodeList().getList();
-        HashMap<String, String> descriptions = new HashMap<>();
+        TreeMap<String, String> descriptions = new TreeMap<>();
         for(Opcode current : allCodes) {
             descriptions.put(current.getCode(), current.getDescription());
         }
@@ -29,7 +29,7 @@ public class CreateDictionary {
      */
 
     @SuppressWarnings("unchecked")
-    private void CreateJSON(HashMap<String, String> descriptions) {
+    private void CreateJSON(TreeMap<String, String> descriptions) {
         JSONObject current;
         JSONArray allDescriptions = new JSONArray();
         for(Map.Entry<String, String> desc : descriptions.entrySet()) {
@@ -46,7 +46,7 @@ public class CreateDictionary {
      */
     private void CreateFile(JSONArray finished) {
         try (BufferedWriter file = new BufferedWriter(new FileWriter("src/main/java/update/Dictionary.json"))) {
-            file.write(finished.toString());
+            file.write(finished.toJSONString());
             file.flush();
         } catch(IOException e) {
             System.out.println("Critical IO Error!");

@@ -17,9 +17,17 @@ $(document).ready(function() {
         Key: "webDisplay.json"
     };
 
+     //Bucket and object to use
+     var dictParams = {
+         Bucket: "dissertation-bucket",
+         Key: "Dictionary.json"
+     };
+
     //Callback function to ensure launchUI() only runs when S3 has returned the data
     getFile(params, function callUI() {
         launchUI();
+        window.dictionaryManager = $.Deferred();
+        getDictionary(dictParams);
     });
  }
 
@@ -161,16 +169,17 @@ function updateContentArea() {
         })
             .appendTo( "#contentArea" );
 
-        const helperText = getHelpText(classID);
+        getHelpText(classID);
         (function() {
             $.when(window.deferredManager).done(function() {
-                console.log("Before call: " + helperText);
-                createHiddenDiv(i, toolTextID, classID, helperText);
+                createHiddenDiv(i, toolTextID, classID);
 
             });
         })();
 
         //Create a tooltip for each line of output
+
+
         $("#" + classID).qtip({
             content: {
                 //Get text content from hidden div
@@ -184,14 +193,13 @@ function updateContentArea() {
     }
 }
 
-function createHiddenDiv(count, toolTextID, classID, displayText) {
-    console.log("Finished: " + displayText);
+function createHiddenDiv(count, toolTextID, classID) {
     //Hidden div inside of element with tooltip info
     $( "<div />", {
         "class": toolTextID,
         "id": toolTextID,
         //Get text from dictionary
-        text: displayText,
+        text: window.finished,
         css: {
             display: "none"
         }
@@ -208,27 +216,21 @@ function changeStyle(source, id) {
 
 function revertStyles(source) {
      //When not hovering, revert background to original
-     $("#" + source).css({
+    $("#" + source).css({
         "background": "rgb(155, 155, 155)"
     });
 }
 
-function getHelpText(source, callback) {
-    //Bucket and object to use
-    var params = {
-        Bucket: "dissertation-bucket",
-        Key: "Dictionary.json"
-    };
-    //callback function to ensure dictionary is available before searching it
-    getDictionary(params, function callFindDef() {
-        var finished = findDefinition(source);
+function getHelpText(source) {
+    $.when(window.dictionaryManager).done(function() {
+        window.finished = findDefinition(source);
         window.deferredManager.resolve();
-        return finished;
+        console.log(window.finished);
     });
-
 }
 
-function getDictionary(params, callback) {
+function getDictionary(params) {
+     //Add deffered
     window.s3.getObject(params, function (error, data) {
         if (error) {
             console.log(error);
@@ -236,20 +238,20 @@ function getDictionary(params, callback) {
             //data.body.toString() returns the raw data from getObject call
             const fileContents = data.Body.toString();
             window.dictionary = fileContents.split(",");
-            callback();
         }
     });
-}
+    window.dictionaryManager.resolve();
+ }
 
 function findDefinition(source) {
     var text = $('#' + source).text();
     //Return the object with the correct definition
     var returnVal = window.dictionary[((text.split(' '))[1])];
     //Undefined if no help available for given opcode
-    console.log("Actual: " + returnVal);
     if(returnVal === undefined) {
         return "No help available";
     }else {
+        console.log(returnVal);
         return returnVal;
     }
 }

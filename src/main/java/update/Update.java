@@ -92,7 +92,9 @@ public class Update {
      * @throws AmazonServiceException if Amazon S3 can not be reached
      */
     private void createDictionary(AmazonS3 s3) throws AmazonServiceException{
+        System.out.println("Creating new dictionary...");
         String filePath = System.getProperty("user.dir") + "/src/main/java/update/Dictionary.json";
+        System.out.println("Updating remote dictionary...");
         s3.putObject(new PutObjectRequest(
                 "dissertation-bucket", "Dictionary.json", new File(filePath))
                 .withCannedAcl(CannedAccessControlList.PublicRead)
