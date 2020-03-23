@@ -134,12 +134,13 @@ function updateContentArea() {
     $("div.contentHolder").remove();
     $("#contentArea div").empty().removeAttr("style");
     for(let i = 0; i < window.split.length; i++) {
+        window.deferredManager = $.Deferred();
         //Root is an identifier with no data
         if(window.dataLines[i] === '[ROOT') {
             i++;
         }
-        var classID = "element" + i;
-        var toolTextID = "tooltip" + i;
+        const classID = "element" + i;
+        const toolTextID = "tooltip" + i;
         $( "<div />", {
             "class": classID,
             "id": classID,
@@ -160,17 +161,14 @@ function updateContentArea() {
         })
             .appendTo( "#contentArea" );
 
-        //Hidden div inside of element with tooltip info
-        $( "<div />", {
-            "class": toolTextID,
-            "id": toolTextID,
-            //Get text from dictionary
-            text: getHelpText(classID),
-            css: {
-                display: "none"
-            }
-        })
-            .appendTo( "#element" + i );
+        const helperText = getHelpText(classID);
+        (function() {
+            $.when(window.deferredManager).done(function() {
+                console.log("Before call: " + helperText);
+                createHiddenDiv(i, toolTextID, classID, helperText);
+
+            });
+        })();
 
         //Create a tooltip for each line of output
         $("#" + classID).qtip({
@@ -184,6 +182,21 @@ function updateContentArea() {
         })
             .attr('title', 'Help');
     }
+}
+
+function createHiddenDiv(count, toolTextID, classID, displayText) {
+    console.log("Finished: " + displayText);
+    //Hidden div inside of element with tooltip info
+    $( "<div />", {
+        "class": toolTextID,
+        "id": toolTextID,
+        //Get text from dictionary
+        text: displayText,
+        css: {
+            display: "none"
+        }
+    })
+        .appendTo("#element" + count);
 }
 
 function changeStyle(source, id) {
@@ -200,7 +213,7 @@ function revertStyles(source) {
     });
 }
 
-function getHelpText(source) {
+function getHelpText(source, callback) {
     //Bucket and object to use
     var params = {
         Bucket: "dissertation-bucket",
@@ -208,7 +221,9 @@ function getHelpText(source) {
     };
     //callback function to ensure dictionary is available before searching it
     getDictionary(params, function callFindDef() {
-        return findDefinition(source);
+        var finished = findDefinition(source);
+        window.deferredManager.resolve();
+        return finished;
     });
 
 }
@@ -231,6 +246,7 @@ function findDefinition(source) {
     //Return the object with the correct definition
     var returnVal = window.dictionary[((text.split(' '))[1])];
     //Undefined if no help available for given opcode
+    console.log("Actual: " + returnVal);
     if(returnVal === undefined) {
         return "No help available";
     }else {
