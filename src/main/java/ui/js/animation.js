@@ -139,10 +139,10 @@ function addBranchTitle(id, branches) {
 
 function updateContentArea() {
     //Clear old display
-    $("div.contentHolder").remove();
+    $("div.contentHolder").empty();
     $("#contentArea div").empty().removeAttr("style");
     for(let i = 0; i < window.split.length; i++) {
-        window.deferredManager = $.Deferred();
+        window.helpTextManager = $.Deferred();
         //Root is an identifier with no data
         if(window.dataLines[i] === '[ROOT') {
             i++;
@@ -165,21 +165,20 @@ function updateContentArea() {
                 paddingBottom: "10px",
                 width: "100%",
                 paddingTop: "10px",
+                background: "rgb(155, 155, 155)",
             }
         })
-            .appendTo( "#contentArea" );
+            .appendTo("div.contentHolder");
 
         getHelpText(classID);
         (function() {
-            $.when(window.deferredManager).done(function() {
+            $.when(window.helpTextManager).done(function() {
+                //Create div only when help text has been assigned
                 createHiddenDiv(i, toolTextID, classID);
-
             });
         })();
 
         //Create a tooltip for each line of output
-
-
         $("#" + classID).qtip({
             content: {
                 //Get text content from hidden div
@@ -187,6 +186,23 @@ function updateContentArea() {
             },
             show: {
                 event: 'mouseover'
+            },
+            effect: {
+                function(api, pos, viewport) {
+                    $(this).animate(pos, {
+                        duration: 1000,
+                        queue: false
+                    });
+                }
+            },
+            position: {
+                my: 'top left',
+                at: 'bottom left',
+                target: $('#' + classID)
+            },
+            adjust: {
+                mouse: true,
+                resize: true
             }
         })
             .attr('title', 'Help');
@@ -222,15 +238,15 @@ function revertStyles(source) {
 }
 
 function getHelpText(source) {
+    //Only execute when dictionary has been created
     $.when(window.dictionaryManager).done(function() {
         window.finished = findDefinition(source);
-        window.deferredManager.resolve();
-        console.log(window.finished);
+        //Confirm the definition has been found
+        window.helpTextManager.resolve();
     });
 }
 
 function getDictionary(params) {
-     //Add deffered
     window.s3.getObject(params, function (error, data) {
         if (error) {
             console.log(error);
@@ -249,9 +265,8 @@ function findDefinition(source) {
     var returnVal = window.dictionary[((text.split(' '))[1])];
     //Undefined if no help available for given opcode
     if(returnVal === undefined) {
-        return "No help available";
+        return "No suggestions available";
     }else {
-        console.log(returnVal);
         return returnVal;
     }
 }
