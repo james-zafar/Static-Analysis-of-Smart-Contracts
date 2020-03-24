@@ -43,7 +43,7 @@ h1 {
     z-index: 1;
     width: 100%;
     height: 15%;
-    background: rgb(88, 88, 88);
+    background: #379683;
 }
 
 #contentArea {
@@ -52,7 +52,7 @@ h1 {
     z-index: 1;
     width: 100%;
     height: 85%;
-    background: rgb(155, 155, 155);
+    background: #5CDB95;
 }
 
 #branchArea {

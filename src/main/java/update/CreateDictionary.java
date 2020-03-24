@@ -30,12 +30,13 @@ public class CreateDictionary {
 
     @SuppressWarnings("unchecked")
     private void CreateJSON(TreeMap<String, String> descriptions) {
-        JSONObject current;
+        JSONObject node;
         JSONArray allDescriptions = new JSONArray();
         for(Map.Entry<String, String> desc : descriptions.entrySet()) {
-            current = new JSONObject();
-            current.put(desc.getKey(), desc.getValue());
-            allDescriptions.add(current);
+            node = new JSONObject();
+            node.put("id", desc.getKey());
+            node.put("value", desc.getValue());
+            allDescriptions.add(node);
         }
         CreateFile(allDescriptions);
     }

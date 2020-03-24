@@ -2,7 +2,7 @@ $(document).ready(function() {
     getAWSData();
 });
 
- function getAWSData() {
+function getAWSData() {
     //Create and config a new instance of AWS S3 Bucket
     AWS.config.region = 'eu-west-2';
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -17,11 +17,11 @@ $(document).ready(function() {
         Key: "webDisplay.json"
     };
 
-     //Bucket and object to use
-     var dictParams = {
-         Bucket: "dissertation-bucket",
-         Key: "Dictionary.json"
-     };
+    //Bucket and object to use
+    var dictParams = {
+        Bucket: "dissertation-bucket",
+        Key: "Dictionary.json"
+    };
 
     //Callback function to ensure launchUI() only runs when S3 has returned the data
     getFile(params, function callUI() {
@@ -29,8 +29,13 @@ $(document).ready(function() {
         window.dictionaryManager = $.Deferred();
         getDictionary(dictParams);
     });
- }
+}
 
+/**
+ *
+ * @param params the name of the bucket and the object to be retrieved
+ * @param callback a function to be executed once the object has been retrieved
+ */
 function getFile(params, callback) {
     window.s3.getObject(params, function (error, data) {
         if (error) {
@@ -47,16 +52,16 @@ function getFile(params, callback) {
 /**
  * Generate animated graph using Cytoscape.js
  */
- function launchUI() {
-     var options = {
+function launchUI() {
+    var options = {
         klay: {
             addUnnecessaryBendpoints: true,
             direction: 'VERTICAL',
             fixedAlignment: 'BALANCED'
         }
-     };
-     console.log(window.split[0]);
-     console.log(window.split[1]);
+    };
+    console.log(window.split[0]);
+    console.log(window.split[1]);
     var cy = window.cy = cytoscape({
         container: document.getElementById('cy'),
 
@@ -64,7 +69,9 @@ function getFile(params, callback) {
             {
                 selector: 'node',
                 style: {
-                    'content': 'data(id)'
+                    'content': 'data(id)',
+                    'background-color': '#379683',
+                    'label': 'data(id)'
                 }
             },
 
@@ -72,7 +79,9 @@ function getFile(params, callback) {
                 selector: 'edge',
                 style: {
                     'curve-style': 'bezier',
-                    'target-arrow-shape': 'triangle'
+                    'target-arrow-shape': 'triangle',
+                    'line-color': '#659dbd',
+                    'target-arrow-color': '#659dbd  ',
                 }
             }
         ],
@@ -93,6 +102,10 @@ function getFile(params, callback) {
     });
 }
 
+/**
+ *
+ * @param evt the event generated from hovering over the target
+ */
 function updateDisplay(evt) {
     const source = (evt.target).id();
     //elements 0 and 1 are node/edge arrays and can be ignored
@@ -108,6 +121,12 @@ function updateDisplay(evt) {
     }
 }
 
+/**
+ *
+ * @param data All branches in raw JSON format
+ * @param id the branch number
+ * @param callback function to update the content area upon finishing
+ */
 function formatData(data, id, callback) {
     const temp = "Branch" + id;
     //Gets each element of original JSON data
@@ -123,18 +142,23 @@ function formatData(data, id, callback) {
     callback();
 }
 
+/**
+ *
+ * @param id the branch number to be added
+ * @param branches the branch(es) to be included in the title
+ */
 function addBranchTitle(id, branches) {
-     //Branches optional parameter, only present if node represents many branches
-     if(branches === undefined) {
-         $("#branchArea").text("Branch: " + id);
-     }else {
-         //Remove identifier text before displaying
-         var newTitle = branches.replace('[Branches <', '');
-         newTitle = newTitle.replace('>', '');
-         newTitle = newTitle.split(' ').join(', ');
-         var display = id + ", " + newTitle;
-         $("#branchArea").text("Branches: " + display);
-     }
+    //Branches optional parameter, only present if node represents many branches
+    if(branches === undefined) {
+        $("#branchArea").text("Branch: " + id);
+    }else {
+        //Remove identifier text before displaying
+        var newTitle = branches.replace('[Branches <', '');
+        newTitle = newTitle.replace('>', '');
+        newTitle = newTitle.split(' ').join(', ');
+        var display = id + ", " + newTitle;
+        $("#branchArea").text("Branches: " + display);
+    }
 }
 
 function updateContentArea() {
@@ -149,67 +173,58 @@ function updateContentArea() {
         }
         const classID = "element" + i;
         const toolTextID = "tooltip" + i;
-        $( "<div />", {
-            "class": classID,
-            "id": classID,
-            text: window.dataLines[i],
-            on: {
-                mouseover: function() {
-                    changeStyle(this.id, i);
-                },
-                mouseleave: function() {
-                    revertStyles(this.id);
-                },
-            },
-            css: {
-                paddingBottom: "10px",
-                width: "100%",
-                paddingTop: "10px",
-                background: "rgb(155, 155, 155)",
-            }
-        })
-            .appendTo("div.contentHolder");
-
-        getHelpText(classID);
-        (function() {
-            $.when(window.helpTextManager).done(function() {
-                //Create div only when help text has been assigned
-                createHiddenDiv(i, toolTextID, classID);
-            });
-        })();
-
-        //Create a tooltip for each line of output
-        $("#" + classID).qtip({
-            content: {
-                //Get text content from hidden div
-                text: $("#" + toolTextID)
-            },
-            show: {
-                event: 'mouseover'
-            },
-            effect: {
-                function(api, pos, viewport) {
-                    $(this).animate(pos, {
-                        duration: 1000,
-                        queue: false
-                    });
-                }
-            },
-            position: {
-                my: 'top left',
-                at: 'bottom left',
-                target: $('#' + classID)
-            },
-            adjust: {
-                mouse: true,
-                resize: true
-            }
-        })
-            .attr('title', 'Help');
+        //Create a hidden div with relevant tooltip and then add new tooltip
+        createNewDiv(classID, toolTextID, i);
+        addToolTip(classID, toolTextID);
     }
 }
 
-function createHiddenDiv(count, toolTextID, classID) {
+
+/**
+ *
+ * @param classID the class to be assigned to the dib
+ * @param toolTextID the id to be assigned to the hidden div
+ * @param count the current number to be associated with the div
+ */
+function createNewDiv(classID, toolTextID, count) {
+    $( "<div />", {
+        "class": classID,
+        "id": classID,
+        text: window.dataLines[count],
+        on: {
+            mouseover: function() {
+                changeStyle(this.id, count);
+            },
+            mouseleave: function() {
+                revertStyles(this.id);
+            },
+        },
+        css: {
+            paddingBottom: "10px",
+            width: "100%",
+            paddingTop: "10px",
+            background: "#5CDB95",
+        }
+    })
+        .appendTo("div.contentHolder");
+
+    //Get the help text for the div and then create new hidden div
+    getHelpText(classID);
+    (function() {
+        $.when(window.helpTextManager).done(function() {
+            //Create div only when help text has been assigned
+            createHiddenDiv(count, toolTextID);
+        });
+    })();
+
+}
+
+/**
+ *
+ * @param count the element number associated with the parent div
+ * @param toolTextID the class and id to be associated with hidden div
+ */
+function createHiddenDiv(count, toolTextID) {
     //Hidden div inside of element with tooltip info
     $( "<div />", {
         "class": toolTextID,
@@ -223,20 +238,72 @@ function createHiddenDiv(count, toolTextID, classID) {
         .appendTo("#element" + count);
 }
 
-function changeStyle(source, id) {
+/**
+ *
+ * @param classID the class of the div the tooltip is to be added to
+ * @param hiddenDivID the class of the div containing the text to be added to tooltip
+ */
+function addToolTip(classID, hiddenDivID) {
+    //Create a tooltip for each line of output
+    $("#" + classID).qtip({
+        content: {
+            //Get text content from hidden div
+            text: $("#" + hiddenDivID)
+        },
+        show: {
+            event: 'mouseover'
+        },
+        effect: {
+            function(api, pos, viewport) {
+                $(this).animate(pos, {
+                    duration: 1000,
+                    queue: false
+                });
+            }
+        },
+        position: {
+            my: 'top left',
+            at: 'bottom left',
+            target: $('#' + classID)
+        },
+        adjust: {
+            mouse: true,
+            resize: true
+        },
+        style: {
+            classes: 'qtip-dark qtip-youtube qtip-rounded'
+        }
+    })
+        .attr('title', 'Help');
+}
+
+/**
+ *
+ * @param source the name of the source element
+ */
+function changeStyle(source) {
     //on hover change the background color
     $(  "#" + source).css({
-        "background": "rgb(109, 109, 109)"
+        "background": "#8EE4AF"
     });
 }
 
+/**
+ *
+ * @param source the name of the source element
+ */
 function revertStyles(source) {
-     //When not hovering, revert background to original
+    //When not hovering, revert background to original
     $("#" + source).css({
-        "background": "rgb(155, 155, 155)"
+        "background": "#5CDB95"
     });
 }
 
+
+/**
+ *
+ * @param source the name of the element text is required for
+ */
 function getHelpText(source) {
     //Only execute when dictionary has been created
     $.when(window.dictionaryManager).done(function() {
@@ -246,6 +313,10 @@ function getHelpText(source) {
     });
 }
 
+/**
+ *
+ * @param params the name of the bucket and the object to be retrieved
+ */
 function getDictionary(params) {
     window.s3.getObject(params, function (error, data) {
         if (error) {
@@ -253,16 +324,28 @@ function getDictionary(params) {
         } else {
             //data.body.toString() returns the raw data from getObject call
             const fileContents = data.Body.toString();
-            window.dictionary = fileContents.split(",");
+            window.dictionary = JSON.parse(fileContents);
+            //console.log(Object.keys((JSON.parse(window.dictionary[10]))));
         }
     });
     window.dictionaryManager.resolve();
- }
+}
 
+/**
+ *
+ * @param source the name of the element a definition is required for
+ * @returns {string|*} the tool tip text
+ */
 function findDefinition(source) {
     var text = $('#' + source).text();
     //Return the object with the correct definition
-    var returnVal = window.dictionary[((text.split(' '))[1])];
+    var searchFor = (text.split(' '))[1];
+    //As array indexes do not match actual opcode ref, search based on opcode ref
+    for(let i = 0; i < window.dictionary.length; i++) {
+        if(window.dictionary[i].id === searchFor) {
+           var returnVal = ((window.dictionary[i].value));
+        }
+    }
     //Undefined if no help available for given opcode
     if(returnVal === undefined) {
         return "No suggestions available";
