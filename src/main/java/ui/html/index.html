@@ -46,11 +46,26 @@
         -->
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
 
-        <script src="../js/animation.js"></script>
+        <!--
+            klay.js is part of the cytoscape-klay library used for layouts within cytoscape
+            klay.js is imported from:
+            https://unpkg.com/klayjs@0.4.1/klay.js
+        -->
+        <script src="https://unpkg.com/klayjs@0.4.1/klay.js"></script>
+
+        <!--
+            Cytoscape-klay is a cytoscape layout library inported from
+            https://github.com/cytoscape/cytoscape.js-klay/blob/master/cytoscape-klay.js
+            for use in the cytoscape container
+        -->
+        <script src="../js/cytoscape-klay.js"></script>
+
+
+        <script src="../js/generateUI.js"></script>
     </head>
 
     <body>
-        <h1>Smart Contract GUI</h1>
+        <h1>Static Analysis of Smart Contract Dissertation Project - James Zafar</h1>
         <div id="cy"></div>
         <div id="container">
             <div id="titleArea">
