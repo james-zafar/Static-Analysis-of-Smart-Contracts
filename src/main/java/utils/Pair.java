@@ -27,11 +27,18 @@ public class Pair<F, S> {
         this.second = p2;
     }
 
-
+    /**
+     *
+     * @return the first element of the pair
+     */
     public F getFirst() {
         return first;
     }
 
+    /**
+     *
+     * @return the second element of the pair
+     */
     public S getSecond() {
         return second;
     }
@@ -67,6 +74,10 @@ public class Pair<F, S> {
         return allMatches;
     }
 
+    /**
+     *
+     * @return a string representation of the pair
+     */
     @Override
     public String toString() {
         return("(" + first + ", " + second + ")");

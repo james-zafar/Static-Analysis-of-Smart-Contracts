@@ -59,8 +59,7 @@ function launchUI() {
             {
                 selector: 'node',
                 style: {
-                    'content': 'data(id)',
-                    'background-color': '#379683',
+                    'background-color': '#99ccff',
                     'label': 'data(id)'
                 }
             },
@@ -70,8 +69,8 @@ function launchUI() {
                 style: {
                     'curve-style': 'bezier',
                     'target-arrow-shape': 'triangle',
-                    'line-color': '#659dbd',
-                    'target-arrow-color': '#659dbd  ',
+                    'line-color': '#99ccff',
+                    'target-arrow-color': '#99ccff',
                 }
             }
         ],
@@ -95,6 +94,7 @@ function launchUI() {
     cy.on('tap', 'node', function(evt){
         updateDisplay(evt);
     });
+
 }
 
 /**
@@ -206,7 +206,7 @@ function createNewDiv(classID, toolTextID, count) {
             width: "100%",
             paddingTop: "10px",
             paddingLeft: "5px",
-            background: "#5CDB95",
+            background: "#ffad33",
         }
     })
         .appendTo("div.contentHolder");
@@ -279,8 +279,8 @@ function addToolTip(classID, hiddenDivID) {
 function changeStyle(source) {
     //on hover change the background color
     $(  "#" + source).css({
-        "background": "#8EE4AF"
-    });
+        "background": "#ffc266"
+        });
 }
 
 /**
@@ -290,7 +290,7 @@ function changeStyle(source) {
 function revertStyles(source) {
     //When not hovering, revert background to original
     $("#" + source).css({
-        "background": "#5CDB95"
+        "background": "#ffad33"
     });
 }
 

@@ -6,8 +6,12 @@ import java.io.IOException;
 
 public class LaunchWebGUI {
 
+    /**
+     * Class for launching Web GUI in default browser
+     */
     public LaunchWebGUI() {
         try {
+            //Path of the main file
             String url = System.getProperty("user.dir") + "/src/main/java/ui/html/index.html";
             File file = new File(url);
             Desktop.getDesktop().browse(file.toURI());
