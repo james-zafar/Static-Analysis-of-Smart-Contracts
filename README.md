@@ -5,12 +5,14 @@ To compile the project from the command line, navigate to the root directory and
 
 By default a list of opcodes will be produced, for alternative outputs replace `<arg>` with:
 
-'opcodes' for a full list of opcodes
+`opcodes` for a full list of opcodes
 
-'branch' to produce the full branch structure
+`branch` to produce the full branch structure
 
-'simple branch' to produce a simplified branch structure
+`simple branch` to produce a simplified branch structure
 
-'gui' to launch the GUI and output a simplified branch structure
+`gui` to launch the GUI and output a simplified branch structure
+
+`update` to update the dictonary file used as part of the GUI and remove any local files which are no longer required.
 
 Bytecode and caller address may be provided using the variables "bytecode" and "address" respectively in src/main/java/decode/decodeBytes/Decode.java.
