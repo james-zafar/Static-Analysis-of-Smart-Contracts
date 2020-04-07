@@ -1,12 +1,12 @@
 body {
     font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
-    font-size: 14px
+    font-size: 15px;
 }
 
 #cy {
     position: absolute;
     left: 0;
-    top: 0;
+    top: 10%;
     bottom: 0;
     right: 0;
     z-index: 1;
@@ -57,6 +57,14 @@ h1 {
 }
 
 #branchArea {
-    font-size:1.75vw;
+    font-size: 1.75vw;
     text-align: center;
+}
+
+.defaultDisplay {
+    padding-bottom: 10px;
+    width: 100%;
+    padding-top: 10px;
+    padding-left: 5px;
+    background: #ffad33;
 }

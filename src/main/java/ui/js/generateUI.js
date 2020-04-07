@@ -195,10 +195,10 @@ function createNewDiv(classID, toolTextID, count) {
         text: window.dataLines[count],
         on: {
             mouseover: function() {
-                changeStyle(this.id, count);
+                changeStyle("#" + this.id, count);
             },
             mouseleave: function() {
-                revertStyles(this.id);
+                revertStyles("#" + this.id);
             },
         },
         css: {
@@ -249,7 +249,7 @@ function addToolTip(classID, hiddenDivID) {
             event: 'mouseover'
         },
         effect: {
-            function(api, pos) {
+            function(pos) {
                 $(this).animate(pos, {
                     duration: 1000,
                     queue: false
@@ -266,7 +266,8 @@ function addToolTip(classID, hiddenDivID) {
             resize: true
         },
         style: {
-            classes: 'qtip-dark qtip-youtube qtip-rounded'
+            classes: 'qtip-dark qtip-youtube qtip-rounded',
+            tip: 'topLeft'
         }
     })
         .attr('title', 'Help');
@@ -278,7 +279,7 @@ function addToolTip(classID, hiddenDivID) {
  */
 function changeStyle(source) {
     //on hover change the background color
-    $(  "#" + source).css({
+    $(source).css({
         "background": "#ffc266"
         });
 }
@@ -289,7 +290,7 @@ function changeStyle(source) {
  */
 function revertStyles(source) {
     //When not hovering, revert background to original
-    $("#" + source).css({
+    $(source).css({
         "background": "#ffad33"
     });
 }

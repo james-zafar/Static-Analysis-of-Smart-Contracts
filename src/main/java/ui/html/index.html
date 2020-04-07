@@ -1,4 +1,4 @@
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 
     <head>
         <title>Smart Contract GUI</title>
@@ -56,6 +56,9 @@
 
         <!-- Main JS File -->
         <script src="../js/generateUI.js"></script>
+
+        <!-- Add tool tips for static elements -->
+        <script src="../js/helperTips.js" defer></script>
     </head>
 
     <body>
@@ -64,6 +67,24 @@
         <div id="container">
             <div id="titleArea">
                 <p id="branchArea"></p>
+                <div class="default">
+                    <div class="defaultDisplay" id="smartContract">
+                        What is a smart contract?
+                        <p id="hiddenText1" style="display:none;">
+                            Smart Contracts are contracts written in the form of program code. Smart contracts are compiled into bytecode which is then executed on a blockchain. This bytecode is not easily understood by humans. This tool aims to reverse engineer the bytecode to give users a better understanding of what opcodes are present in a given smart contract.
+                        </p>
+                    </div>
+                    <div class="defaultDisplay" id="opcodes">
+                        What are opcodes?
+                        <p id="hiddenText2" style="display:none;">
+                            Opcodes are the operations executed on the Ethereum Virtual Machines (EVM). Each opcode  represents a unique operation. The full list of opcodes is available in the Ethereum Yellow Paper which is available <a href="https://ethereum.github.io/yellowpaper/paper.pdf">here</a>.
+                        </p>
+                    </div>
+                    <div class="defaultDisplay" id="howToUse">
+                        How should I use this tool?
+                        <p id="hiddenText3" style="display:none;">Text</p>
+                    </div>y
+                </div>
             </div>
             <div id="contentArea">
                 <div class="contentHolder"></div>
