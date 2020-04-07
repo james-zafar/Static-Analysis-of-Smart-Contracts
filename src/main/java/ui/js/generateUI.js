@@ -159,7 +159,7 @@ function addBranchTitle(id, branches) {
 function updateContentArea() {
     //Clear old display
     $("div.contentHolder").empty();
-    $("#contentArea div").empty().removeAttr("style");
+    //$("#contentArea div").empty().removeAttr("style");
     for(let i = 0; i < window.split.length; i++) {
         window.helpTextManager = $.Deferred();
         //Root is an identifier with no data

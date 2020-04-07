@@ -5,7 +5,6 @@
 
         <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
 
-
         <link rel="stylesheet" href="../css/style.css">
 
         <!--
@@ -67,26 +66,41 @@
         <div id="container">
             <div id="titleArea">
                 <p id="branchArea"></p>
+            </div>
+            <div id="contentArea">
                 <div class="default">
+                    <!--
+                        Default Display contains all of the help text/information that is displayed as a user guide
+                    -->
                     <div class="defaultDisplay" id="smartContract">
                         What is a smart contract?
                         <p id="hiddenText1" style="display:none;">
-                            Smart Contracts are contracts written in the form of program code. Smart contracts are compiled into bytecode which is then executed on a blockchain. This bytecode is not easily understood by humans. This tool aims to reverse engineer the bytecode to give users a better understanding of what opcodes are present in a given smart contract.
+                            Smart Contracts are contracts written in the form of program code.
+                            Smart contracts are compiled into bytecode which is then executed on a blockchain.
+                            This bytecode is not easily understood by humans.
+                            This tool aims to reverse engineer the bytecode to give users a better understanding of what opcodes are present in a given smart contract.
                         </p>
                     </div>
                     <div class="defaultDisplay" id="opcodes">
                         What are opcodes?
                         <p id="hiddenText2" style="display:none;">
-                            Opcodes are the operations executed on the Ethereum Virtual Machines (EVM). Each opcode  represents a unique operation. The full list of opcodes is available in the Ethereum Yellow Paper which is available <a href="https://ethereum.github.io/yellowpaper/paper.pdf">here</a>.
+                            Opcodes are the operations executed on the Ethereum Virtual Machines (EVM).
+                            Each opcode  represents a unique operation.
+                            The full list of opcodes is available in the Ethereum Yellow Paper which is available <a href="https://ethereum.github.io/yellowpaper/paper.pdf">here</a>.
                         </p>
                     </div>
                     <div class="defaultDisplay" id="howToUse">
                         How should I use this tool?
-                        <p id="hiddenText3" style="display:none;">Text</p>
-                    </div>y
+                        <p id="hiddenText3" style="display:none;">
+                            This tool should be used to provide a greater understanding of the opcodes present in a given smart contract.
+                            Each branch represents part of the contract. Some branches are not executed.
+                            Interacting with branches will allow you to view a list of opcodes present within that branch.
+                            Hovering over a given opcode will describe what this opcode does.
+                        </p>
+                    </div>
+                    <hr />
                 </div>
-            </div>
-            <div id="contentArea">
+
                 <div class="contentHolder"></div>
             </div>
         </div>
