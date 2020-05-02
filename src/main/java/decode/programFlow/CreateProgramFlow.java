@@ -58,11 +58,16 @@ public class CreateProgramFlow {
             new AWSUpload();
             new LaunchWebGUI();
         }
+        //Use the below to print out the contents of the relevant variables
         //finished.forEach(current -> System.out.print(current + "\n"));
         //System.out.println(Arrays.deepToString(programFlow.entrySet().toArray()));
-
     }
 
+    /**
+     *
+     * @param outputType the method to be used to output the data
+     * @param sp An instance of the simplified flow
+     */
     private void outputData(String outputType, SimplifyFlow sp) {
         if(outputType.matches("simpleBranch") || outputType.matches("web")) {
             programFlow = sp.getSimplifiedFlow();
@@ -110,6 +115,11 @@ public class CreateProgramFlow {
         }
     }
 
+    /**
+     *
+     * @return the index of the first available branch
+     * @throws ProgramFlowException if no reserved branches exist
+     */
     private int findReservedBranch() throws ProgramFlowException {
         /*
         Search for and return the first instance of a reserved branch
@@ -123,6 +133,11 @@ public class CreateProgramFlow {
         throw new ProgramFlowException("No reserved branch exists");
     }
 
+    /**
+     *
+     * @param code an individual opcode
+     * @param branch the full contents of the branch which the opcode belongs to
+     */
     private void manageOpcode(String code, ArrayList<String> branch) {
         try {
             switch (code) {
@@ -145,6 +160,10 @@ public class CreateProgramFlow {
         }
     }
 
+    /**
+     *
+     * @param currentBranch The full contents of the branch
+     */
     private synchronized void addBranch(ArrayList<String> currentBranch) {
         if(branchLinkPossible(programFlow.get((branchNumber - 1)))) {
             if(!(branchLinkExists((branchNumber - 1), branchNumber))) {
@@ -160,6 +179,11 @@ public class CreateProgramFlow {
         addToBranch = true;
     }
 
+    /**
+     *
+     * @param currentBranch the contents of the branch
+     * @throws ProgramFlowException if the jump can not be completed due to invalid indexing
+     */
     private void addJump(ArrayList<String> currentBranch) throws ProgramFlowException {
         String temp = finished.get(current);
         //Split current into [instructionNo, opcodeNo, opcodeType, addedToStack, removedFromStack]
@@ -191,6 +215,12 @@ public class CreateProgramFlow {
         }
     }
 
+    /**
+     *
+     * @param split the contents of the branch
+     * @param reason the reason the jump has failed
+     * @param currentBranch the contents of the branch the jump is to be added to
+     */
     private void addFailedJump(List<String> split, String reason, ArrayList<String> currentBranch) {
         branchLinks.add(new Pair<>((branchNumber - 1), branchNumber));
         String setReason = "Failed jump: " + reason;
@@ -200,6 +230,11 @@ public class CreateProgramFlow {
         addBranch(currentBranch);
     }
 
+    /**
+     *
+     * @param currentBranch the contents of the branch
+     * @throws ProgramFlowException if the jump can not be completed due to invalid indexes
+     */
     private void doJumpI(ArrayList<String> currentBranch) throws ProgramFlowException {
         //JumpI is essentially "Jump If", if the test is passed then addJump as normal
         String info = finished.get(current);
@@ -212,6 +247,10 @@ public class CreateProgramFlow {
         }
     }
 
+    /**
+     *
+     * @param currentBranch the branch to append the content to
+     */
     private void addKill(ArrayList<String> currentBranch) {
         //Kill is any stopping/reverting function which alters the flow of execution
         currentBranch.add(finished.get(current));
@@ -219,6 +258,11 @@ public class CreateProgramFlow {
         addBranch(currentBranch);
     }
 
+    /**
+     *
+     * @param branchFrom the contents of the branch to be checked
+     * @return true if a branch link is possible, false otherwise
+     */
     private boolean branchLinkPossible(List<String> branchFrom) {
         //If origin branch is empty, return false
         if(branchFrom == null) return false;
@@ -232,6 +276,12 @@ public class CreateProgramFlow {
         return true;
     }
 
+    /**
+     *
+     * @param branchFrom the source branch
+     * @param branchTo the target branch
+     * @return true if a link already exists, false otherwise
+     */
     private boolean branchLinkExists(int branchFrom, int branchTo) {
         //Create a new instance of pair with the pair being searched for
         Pair<Integer, Integer> newPair = new Pair<>(branchFrom, branchTo);

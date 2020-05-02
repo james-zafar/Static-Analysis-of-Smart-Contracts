@@ -29,14 +29,25 @@ public class SimplifyFlow {
         missingBranchLinks();
     }
 
+    /**
+     *
+     * @return the complete HashMap of branches and contents after simplification
+     */
     public HashMap<Integer, ArrayList<String>> getSimplifiedFlow() {
         return this.programFlow;
     }
 
+    /**
+     *
+     * @return a list of branch links with no identical branches
+     */
     public List<Pair<Integer, Integer>> getSimplifiedLinks() {
         return this.branchLinks;
     }
 
+    /**
+     * Starts the process of simplification
+     */
     private void simplify() {
         //Can not amend a map whilst iterating over it, so use tempFlow to store the new flow
         HashMap<Integer, ArrayList<String>> tempFlow = new HashMap<>();
@@ -55,6 +66,9 @@ public class SimplifyFlow {
         removeDuplicateBranches();
     }
 
+    /**
+     * Removes any identical branches from the finished flow
+     */
     private void removeDuplicateBranches() {
         //After collapsing all branches iterate over the new map and delete any excess branches
         String current;
@@ -70,6 +84,12 @@ public class SimplifyFlow {
         }
     }
 
+    /**
+     * Removes any identical branches
+     * @param key starting branch number
+     * @param values a list of the contents of the branches
+     * @param tempFlow a complete set of branches
+     */
     private void collapseBranches(int key, ArrayList<String> values, HashMap<Integer, ArrayList<String>> tempFlow) {
         StringBuilder sb = new StringBuilder();
         //Marks the start and finish point of branches that can be removed
@@ -98,6 +118,12 @@ public class SimplifyFlow {
         tempFlow.put(key, values);
     }
 
+    /**
+     *
+     * @param key the branch number
+     * @param values the list of branches
+     * @return true if the branch exists, false otherwise
+     */
     private boolean branchMatch(int key, ArrayList<String> values) {
         //Remove the instruction number from branches to compare the opcodes only
         List<String> temp = Arrays.asList(programFlow.get(key).get(0).split("\\s+"));
@@ -117,6 +143,9 @@ public class SimplifyFlow {
         return false;
     }
 
+    /**
+     * Check if all branches contain valid links
+     */
     private void checkBranches() {
         //copy of branch links required to prevent concurrent modification exception
         List<Pair<Integer, Integer>> tempBranchLinks = new ArrayList<Pair<Integer, Integer>>();
@@ -137,10 +166,19 @@ public class SimplifyFlow {
         branchLinks = tempBranchLinks;
     }
 
+    /**
+     *
+     * @param toSearch the list to search through
+     * @param searchFor the integer being searched for
+     * @return true if the argument exists, false otherwise
+     */
     private Integer searchList(List<Integer> toSearch, Integer searchFor) {
         return toSearch.stream().filter(current -> (current.equals(searchFor))).findAny().orElse(null);
     }
 
+    /**
+     * Check for any missing links between branches
+     */
     private void missingBranchLinks() {
         for (Map.Entry<Integer, ArrayList<String>> entry : programFlow.entrySet()) {
             List<String> temp = entry.getValue();
@@ -166,6 +204,12 @@ public class SimplifyFlow {
         }
     }
 
+    /**
+     *
+     * @param source the source branch to check
+     * @param target the target branch to check
+     * @return true if a pair exists, false otherwise
+     */
     private boolean branchExists(int source, int target) {
         if(source == target) return true;
         if(source <= 0 || target <= 0) return true;
