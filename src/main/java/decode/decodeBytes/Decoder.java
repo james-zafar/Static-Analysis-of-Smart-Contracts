@@ -208,7 +208,7 @@ public class Decoder {
             additionalInfo.add(res);
             additionalInfo.add(removed);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            System.out.println("Unhandled error during invoctation: " + e.getMessage());
         }
         return additionalInfo;
     }
@@ -230,7 +230,7 @@ public class Decoder {
             res = (String) result;
             stack.push(res);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+            System.out.println("Unhandled error during invoctation: " + e.getMessage());
         }
         additionalInfo.add(res);
         additionalInfo.add(removed);
@@ -315,7 +315,8 @@ public class Decoder {
             java.lang.reflect.Method method = myClass.getDeclaredMethod(methodName);
             method.invoke(completeArithmeticOps);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("Unhandled error during invoctation: " + e.getMessage());
+
         }
     }
 
